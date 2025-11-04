@@ -1,0 +1,96 @@
+,,,,,
+,,,,,
+Nombre del indicador,Porcentaje de población de adolescentes mujeres de 12 a 17 años en unión libre,,,,
+Dominio,Supervivencia,,,,
+Derecho,A vivir en condiciones de bienestar y sano desarrollo integral,,,,
+Dimensión,Uniones,,,,
+Unidad de medida,Porcentaje,,,,
+Indicador según fuente oficial,Porcentaje de población femenina de 12 a 17 años en unión libre,,,,
+Fuente,Estimaciones de la SE-SIPINNA con base en datos del INEGI. CENSO 2020,,,,
+,,,,,
+Descripción: Porcentaje de personas que viven con otra sin haber contraído matrimonio civil o religioso.,,,,,
+,,,,,
+Nota: La ficha del metadato no se encuentra disponible.,,,,,
+,,,,,
+"Porcentaje de población de adolescentes mujeres de 12 a 17 años en unión libre por grupo de edad, municipio y grupo de edad",,,,,
+en Morelos 2020 por municipio y grupo de edad.,,,,,
+Clave_Geográfica,Año,Nombre_Geográfico,Total,De 12  a 14 años,De 14  a 17 años
+17 035,2020,Xoxocotla,7.6,0.6,7.0
+17 023,2020,Tlalnepantla,7.6,0.7,6.9
+17 022,2020,Tetela del Volcán,7.0,0.4,6.6
+17 001,2020,Amacuzac,6.1,0.3,5.8
+17 014,2020,Mazatepec,5.9,0.2,5.7
+17 027,2020,Totolapan,5.9,0.3,5.7
+17 013,2020,Jonacatepec de Leandro Valle,5.8,0.2,5.6
+17 004,2020,Ayala,5.8,0.5,5.3
+17 003,2020,Axochiapan,5.8,0.2,5.6
+17 016,2020,Ocuituco,5.3,0.4,4.9
+17 019,2020,Tepalcingo,5.0,0.5,4.5
+17 026,2020,Tlayacapan,4.8,0.4,4.4
+17 030,2020,Yecapixtla,4.8,0.6,4.3
+17 024,2020,Tlaltizapán de Zapata,4.8,0.2,4.6
+17 032,2020,Zacualpan de Amilpas,4.7,0.0,4.7
+17 002,2020,Atlatlahucan,4.7,0.4,4.3
+17 017,2020,Puente de Ixtla,4.6,0.3,4.3
+17 005,2020,Coatlán del Río,4.3,0.4,3.9
+17 033,2020,Temoac,4.3,0.4,3.9
+17 025,2020,Tlaquiltenango,4.3,0.2,4.1
+17 010,2020,Jantetelco,4.2,0.0,4.2
+17 029,2020,Yautepec,4.1,0.3,3.8
+17 028,2020,Xochitepec,4.0,0.2,3.8
+17 034,2020,Coatetelco,3.8,0.0,3.8
+17 009,2020,Huitzilac,3.8,0.1,3.7
+17 018,2020,Temixco,3.7,0.3,3.4
+17 036,2020,Hueyapan,3.7,0.0,3.7
+17 020,2020,Tepoztlán,3.7,0.3,3.4
+17 012,2020,Jojutla,3.2,0.2,3.0
+17 008,2020,Emiliano Zapata,3.1,0.2,2.9
+17 006,2020,Cuautla,3.1,0.2,2.9
+17 021,2020,Tetecala,3.0,0.3,2.7
+17 015,2020,Miacatlán,2.9,0.0,2.9
+17 031,2020,Zacatepec,2.5,0.1,2.4
+17 011,2020,Jiutepec,2.0,0.1,1.9
+17 007,2020,Cuernavaca,1.8,0.1,1.7
+17,2020,Morelos,3.6,0.2,3.4
+,,,,,Elaborado por la Dirección Administrativa del Sistema de Información Nacional de la SE-SIPINNA con base en datos del INEGI.
+,,,,,
+Porcentaje de población de adolescentes mujeres de 12 a 17 años en unión libre con alguna condición adicional en Morelos,,,,,
+2020 por municipio.,,,,,
+Clave_Geográfica,Año,Nombre_Geográfico,Con al menos un hijo nacido vivo,No asiste a la escuela,Sin afiliación a servicios de salud
+17 035,2020,Xoxocotla,40.2,93.4,33.6
+17 023,2020,Tlalnepantla,30.3,90.9,42.4
+17 022,2020,Tetela del Volcán,34.9,84.1,22.2
+17 001,2020,Amacuzac,42.1,87.7,12.3
+17 014,2020,Mazatepec,31.0,89.7,24.1
+17 027,2020,Totolapan,40.9,90.9,27.3
+17 013,2020,Jonacatepec de Leandro Valle,36.2,97.9,25.5
+17 004,2020,Ayala,48.0,93.6,38.1
+17 003,2020,Axochiapan,34.5,94.1,25.2
+17 016,2020,Ocuituco,35.1,89.5,36.8
+17 019,2020,Tepalcingo,40.6,98.6,21.7
+17 026,2020,Tlayacapan,37.5,85.4,25.0
+17 030,2020,Yecapixtla,41.4,93.1,25.5
+17 024,2020,Tlaltizapán de Zapata,38.6,92.1,37.0
+17 032,2020,Zacualpan de Amilpas,16.7,75.0,25.0
+17 002,2020,Atlatlahucan,42.2,87.5,35.9
+17 017,2020,Puente de Ixtla,36.5,81.3,31.3
+17 005,2020,Coatlán del Río,47.6,85.7,33.3
+17 033,2020,Temoac,44.4,97.2,8.3
+17 025,2020,Tlaquiltenango,43.7,84.5,16.9
+17 010,2020,Jantetelco,38.5,94.9,20.5
+17 029,2020,Yautepec,41.9,87.2,30.0
+17 028,2020,Xochitepec,45.3,88.7,35.3
+17 034,2020,Coatetelco,37.5,95.8,16.7
+17 009,2020,Huitzilac,38.8,89.8,40.8
+17 018,2020,Temixco,48.1,92.6,34.6
+17 036,2020,Hueyapan,35.3,100.0,35.3
+17 020,2020,Tepoztlán,42.6,87.1,44.6
+17 012,2020,Jojutla,44.2,89.5,33.7
+17 008,2020,Emiliano Zapata,40.9,83.6,32.7
+17 006,2020,Cuautla,42.5,86.1,37.9
+17 021,2020,Tetecala,50.0,100.0,10.0
+17 015,2020,Miacatlán,54.2,83.3,33.3
+17 031,2020,Zacatepec,30.2,90.7,39.5
+17 011,2020,Jiutepec,45.1,88.2,48.7
+17 007,2020,Cuernavaca,49.5,84.6,43.0
+17,2020,Morelos,42.4,89.2,33.8

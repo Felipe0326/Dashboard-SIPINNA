@@ -1,0 +1,23 @@
+,,,,
+,,,,
+Nombre del indicador,"Número de suicidios en niñas, niños y adolescentes de 10 a 17 años",,,
+Dominio,Protección,,,
+Derecho,Vida libre de violencia e integridad personal,,,
+Dimensión,Violencia y maltrato ,,,
+Unidad de medida,Número de personas,,,
+Indicador según fuente oficial,Número de suicidios en la población de 10 a 17 años,,,
+Fuente,Estimación de la SE-SIPINNA con base en datos del INEGI en registros de mortalidad 2018-2021,,,
+,,,,
+"Descripción: Registro del número de suicidios de niños, niñas y adolescentes definido como el acto de una ",,,,
+"persona, cuyo resultado destruye su propia existencia.",,,,
+,,,,
+"Número de suicidios en niñas, niños y adolescentes de 10 a 17 años en Morelos 2018-2021 por sexo y grupo de edad. ",,,,
+Clave_Geográfica,Nombre_Geográfico,,Desagregación,
+17,Morelos,,Sexo y grupo de edad,
+Año,2018,2019,2020,2021
+Total,9,12,9,17
+Hombre,3,9,6,13
+Mujer,6,3,3,4
+De 10 a 14 años,5,3,3,4
+De 15 a 17 años,4,9,6,13
+,,,,Nota: Última fecha de consulta 07 de junio de 2023
