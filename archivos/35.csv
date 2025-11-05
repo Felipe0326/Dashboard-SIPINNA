@@ -1,4 +1,4 @@
-Clave_Geográfica,Nombre_Geográfico,Desagregación,
-17,Morelos,"Total de niñas, niños y adolescentes de 5 a 17 años",
-Año,2015,2017,2019
-Valor,4.5,5.7,6.5
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,"Total de niñas, niños y adolescentes de 5 a 17 años",Total,2015,4.5
+17,Morelos,"Total de niñas, niños y adolescentes de 5 a 17 años",Total,2017,5.7
+17,Morelos,"Total de niñas, niños y adolescentes de 5 a 17 años",Total,2019,6.5

@@ -379,21 +379,13 @@
         }else if(idSel === '06' || idSel === '07' || idSel === '08'){
           renderYearsNoFilters(datos);                 // Sin filtros; años X; barras Valor
         }
-        // ==== Nuevos ajustes que pediste antes (ya existentes en tu código) ====
+        // ==== Nuevos ajustes que pediste ====
         else if(idSel === '09'){
           renderSexoYears(datos);                      // Filtro Sexo (H/M/T); años X; barras
         }else if(idSel === '10'){
           renderSerieFromColumns(datos);               // Filtro Serie desde columnas numéricas
         }else if(idSel === '13'){
-          renderYearsNoFilters(datos);                 // Años en X, sin filtros
-        }
-        // ==== 🔸 NUEVO: cards solicitadas en este cambio ====
-        else if(['20','28','35','38'].includes(idSel)){
-          // Sin filtros; años en X; etiqueta clara
-          renderYearsNoFilters(datos);
-        }else if(['26','31','32','34','36'].includes(idSel)){
-          // Un solo filtro: "Serie" (Hombres/Mujeres/Total u otros)
-          renderSerieOnly(datos);
+          renderYearsNoFilters(datos);                 // Como 06/07/08 (años en X, sin filtros)
         }
         // ==== Resto (genérico) ====
         else{
@@ -632,7 +624,7 @@
       );
     }
 
-    // CARD 6/7/8/13 (+ 20/28/35/38): sin filtros; años en X
+    // CARD 6/7/8/13: sin filtros; años en X
     function renderYearsNoFilters(datos){
       let {header, rows} = datos;
       const iAnio  = getColIndex(header,'Año');
@@ -672,10 +664,12 @@
     //    NUEVOS ESPECIALES
     // ==========================
 
-    // CARD 9: Filtro Sexo (H/M/T); años en X (ya presente)
+    // CARD 9: Filtro Sexo (Hombres/Mujeres/Total); años en X
     function renderSexoYears(datos){
       let {header, rows} = datos;
 
+      // Esperamos columnas: Año, Hombres, Mujeres, Total (en tabla ancha)
+      // Si vino despivotado como (Etiqueta, Serie, Valor), adaptamos.
       const iAnio = getColIndex(header,'Año');
       const iH = getColIndex(header,'Hombres');
       const iM = getColIndex(header,'Mujeres');
@@ -702,18 +696,21 @@
         let pares = [];
 
         if(iAnio!==-1 && iH!==-1 && iM!==-1 && iT!==-1){
+          // Tabla ancha
           const idx = sexo==='Hombres' ? iH : (sexo==='Mujeres' ? iM : iT);
           pares = rows
             .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[idx]) }))
             .filter(p => p.anio !== null)
             .sort((a,b)=> a.anio - b.anio);
         }else if(iSerie!==-1 && iValor!==-1 && iAnio!==-1){
+          // Despivotado (Serie = H/M/T)
           pares = rows
             .filter(r => String(r[iSerie]).toLowerCase() === sexo.toLowerCase())
             .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
             .filter(p => p.anio !== null)
             .sort((a,b)=> a.anio - b.anio);
         }else{
+          // Fallback genérico
           procesarYConstruirFiltros(datos);
           return;
         }
@@ -731,58 +728,12 @@
       construirTabla(rows, header);
     }
 
-    // 🔸 NUEVO: Cards 26, 31, 32, 34, 36 -> Filtro único "Serie"; años en X
-    function renderSerieOnly(datos){
-      const {header, rows} = datos;
-      const iSerie = getColIndex(header,'Serie');
-      const iAnio  = getColIndex(header,'Año');
-      const iValor = getColIndex(header,'Valor');
-      if(iSerie===-1 || iAnio===-1 || iValor===-1){ procesarYConstruirFiltros(datos); return; }
-
-      datosDetalleActual = {
-        ...datosDetalleActual,
-        header, rows,
-        analysis: { labelIndex:iAnio, metricIndices:[{label:'Valor', index:iValor}], categoryIndices:[] },
-        _mode:'serie-only'
-      };
-
-      const opcionesSerie = Array.from(new Set(rows.map(r=>r[iSerie]).filter(Boolean))).sort();
-      const cont = document.getElementById('detalle-filtros-contenedor');
-      cont.innerHTML = `
-        <div>
-          <label for="filtro-serie-only" class="block text-sm font-medium text-muted mb-1">Serie</label>
-          <select id="filtro-serie-only" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-            ${opcionesSerie.map(o=>`<option value="${o}">${o}</option>`).join('')}
-          </select>
-        </div>
-      `;
-      document.getElementById('filtro-serie-only').addEventListener('change', actualizarGraficaSerieOnly);
-
-      actualizarGraficaSerieOnly();
-      construirTabla(rows, header);
-
-      function actualizarGraficaSerieOnly(){
-        const indicador = DB_INDEX.find(x=>x.id===datosDetalleActual.id) || {};
-        const {unidad} = indicador;
-
-        const serieSel = document.getElementById('filtro-serie-only').value;
-        const pares = rows
-          .filter(r => (r[iSerie]===serieSel))
-          .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
-          .filter(p => p.anio !== null)
-          .sort((a,b)=> a.anio - b.anio);
-
-        const etiqueta = `Valor – ${serieSel}`;
-        const titulo   = `${indicador?.nombre || ''} (${unidad || 'Valor'}) – ${serieSel}`;
-        dibujarBarras(pares.map(p=>String(p.anio)), pares.map(p=>p.valor), etiqueta, titulo);
-      }
-    }
-
-    // CARD 10: Serie desde columnas numéricas o pivote (ya presente)
+    // CARD 10: Filtro Serie desde columnas numéricas; años en X
     function renderSerieFromColumns(datos){
       let {header, rows} = datos;
       datosDetalleActual = {...datosDetalleActual, header, rows, _mode:'card10-serie-columns'};
 
+      // Detectar "Año" + columnas numéricas candidatas (excluir obvias no serie)
       const iAnio = getColIndex(header,'Año');
       const candidatas = header
         .map((h,idx)=>({h, idx}))
@@ -793,12 +744,14 @@
           return ratioNumericoCol(rows, o.idx) >= 0.6;
         });
 
+      // Si la tabla ya llegó despivotada (Etiqueta, Serie, Valor)
       const iSerie = getColIndex(header,'Serie');
       const iValor = getColIndex(header,'Valor');
 
       const cont = document.getElementById('detalle-filtros-contenedor');
 
       if(iSerie!==-1 && iValor!==-1 && iAnio!==-1){
+        // Despivotado: usamos Serie única de la columna 'Serie'
         const opciones = Array.from(new Set(rows.map(r=>r[iSerie]).filter(Boolean))).sort();
         cont.innerHTML = `
           <div>
@@ -832,6 +785,7 @@
         return;
       }
 
+      // Tabla ancha: elegimos entre las columnas numéricas
       if(iAnio!==-1 && candidatas.length){
         cont.innerHTML = `
           <div>
@@ -865,6 +819,7 @@
         return;
       }
 
+      // Fallback genérico si no se logró
       procesarYConstruirFiltros(datos);
     }
 
@@ -877,6 +832,7 @@
       return m ? parseInt(m[0],10) : null;
     }
 
+    // Dibuja barras verticales con título y dataset label claros
     function dibujarBarras(labels, values, datasetLabel = 'Valor', chartTitle = ''){
       const ctx = document.getElementById('grafica-indicador').getContext('2d');
       if(graficaActual) graficaActual.destroy();

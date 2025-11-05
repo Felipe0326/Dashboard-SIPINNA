@@ -1,4 +1,21 @@
-Clave_Geográfica,,Nombre_Geográfico,,Desagregación,
-17,,Morelos,,Total,
-Año,2018,2019,2020,2021,2022
-Valor,1,6,3,3,5
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,Sexo y grupo de edad,Total,2018,9
+17,Morelos,Sexo y grupo de edad,Total,2019,12
+17,Morelos,Sexo y grupo de edad,Total,2020,9
+17,Morelos,Sexo y grupo de edad,Total,2021,17
+17,Morelos,Sexo y grupo de edad,Hombre,2018,3
+17,Morelos,Sexo y grupo de edad,Hombre,2019,9
+17,Morelos,Sexo y grupo de edad,Hombre,2020,6
+17,Morelos,Sexo y grupo de edad,Hombre,2021,13
+17,Morelos,Sexo y grupo de edad,Mujer,2018,6
+17,Morelos,Sexo y grupo de edad,Mujer,2019,3
+17,Morelos,Sexo y grupo de edad,Mujer,2020,3
+17,Morelos,Sexo y grupo de edad,Mujer,2021,4
+17,Morelos,Sexo y grupo de edad,De 10 a 14 años,2018,5
+17,Morelos,Sexo y grupo de edad,De 10 a 14 años,2019,3
+17,Morelos,Sexo y grupo de edad,De 10 a 14 años,2020,3
+17,Morelos,Sexo y grupo de edad,De 10 a 14 años,2021,4
+17,Morelos,Sexo y grupo de edad,De 15 a 17 años,2018,4
+17,Morelos,Sexo y grupo de edad,De 15 a 17 años,2019,9
+17,Morelos,Sexo y grupo de edad,De 15 a 17 años,2020,6
+17,Morelos,Sexo y grupo de edad,De 15 a 17 años,2021,13

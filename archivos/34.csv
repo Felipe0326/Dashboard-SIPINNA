@@ -1,12 +1,51 @@
-Clave_Geográfica,,Nombre_Geográfico,,Desagregación,,Clave_Geográfica,,Nombre_Geográfico,,Desagregación,
-17,,Morelos,,Grupo de edad,,17,,Morelos,,"De 0 a 17 años, de 0 a 11 años, de 12 a 17 años y condición de acompañamiento",
-Año,2018,2019,2020,2021,2022,Año,2018,2019,2020,2021,2022
-De 0 a 11 años,9,8,0,3,0,De 0 a 17 años total,24,20,0,3,2
-De 12 a 17 años,15,12,0,0,2,De 0 a 17 años acompañados,12,18,0,3,2
-Total ,24,20,0,3,2,De 0 a 17 años no acompañados,12,2,0,0,0
-,,,,,,De 0 a 11 años total,9,8,0,3,0
-,,,,,,De 0 a 11 años acompañados,9,7,0,3,0
-,,,,,,De 0 a 11 años no acompañados,0,1,0,0,0
-,,,,,,De 12 a 17 años total,15,12,0,0,2
-,,,,,,De 12 a 17 años acompañados,3,11,0,0,2
-,,,,,,De 12 a 17 años no acompañados,12,1,0,0,0
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,Grupo de edad,De 0 a 11 años,2018,9
+17,Morelos,Grupo de edad,De 0 a 11 años,2019,8
+17,Morelos,Grupo de edad,De 0 a 11 años,2020,0
+17,Morelos,Grupo de edad,De 0 a 11 años,2021,3
+17,Morelos,Grupo de edad,De 0 a 11 años,2022,0
+17,Morelos,De 0 a 17 años,De 0 a 17 años total,2018,24
+17,Morelos,De 0 a 17 años,De 0 a 17 años total,2019,20
+17,Morelos,De 0 a 17 años,De 0 a 17 años total,2020,0
+17,Morelos,De 0 a 17 años,De 0 a 17 años total,2021,3
+17,Morelos,De 0 a 17 años,De 0 a 17 años total,2022,2
+17,Morelos,De 0 a 17 años,De 0 a 17 años acompañados,2018,12
+17,Morelos,De 0 a 17 años,De 0 a 17 años acompañados,2019,18
+17,Morelos,De 0 a 17 años,De 0 a 17 años acompañados,2020,0
+17,Morelos,De 0 a 17 años,De 0 a 17 años acompañados,2021,3
+17,Morelos,De 0 a 17 años,De 0 a 17 años acompañados,2022,2
+17,Morelos,De 0 a 17 años,De 0 a 17 años no acompañados,2018,12
+17,Morelos,De 0 a 17 años,De 0 a 17 años no acompañados,2019,2
+17,Morelos,De 0 a 17 años,De 0 a 17 años no acompañados,2020,0
+17,Morelos,De 0 a 17 años,De 0 a 17 años no acompañados,2021,0
+17,Morelos,De 0 a 17 años,De 0 a 17 años no acompañados,2022,0
+17,Morelos,De 0 a 11 años,De 0 a 11 años total,2018,9
+17,Morelos,De 0 a 11 años,De 0 a 11 años total,2019,8
+17,Morelos,De 0 a 11 años,De 0 a 11 años total,2020,0
+17,Morelos,De 0 a 11 años,De 0 a 11 años total,2021,3
+17,Morelos,De 0 a 11 años,De 0 a 11 años total,2022,0
+17,Morelos,De 0 a 11 años,De 0 a 11 años acompañados,2018,9
+17,Morelos,De 0 a 11 años,De 0 a 11 años acompañados,2019,7
+17,Morelos,De 0 a 11 años,De 0 a 11 años acompañados,2020,0
+17,Morelos,De 0 a 11 años,De 0 a 11 años acompañados,2021,3
+17,Morelos,De 0 a 11 años,De 0 a 11 años acompañados,2022,0
+17,Morelos,De 0 a 11 años,De 0 a 11 años no acompañados,2018,0
+17,Morelos,De 0 a 11 años,De 0 a 11 años no acompañados,2019,1
+17,Morelos,De 0 a 11 años,De 0 a 11 años no acompañados,2020,0
+17,Morelos,De 0 a 11 años,De 0 a 11 años no acompañados,2021,0
+17,Morelos,De 0 a 11 años,De 0 a 11 años no acompañados,2022,0
+17,Morelos,De 12 a 17 años,De 12 a 17 años total,2018,15
+17,Morelos,De 12 a 17 años,De 12 a 17 años total,2019,12
+17,Morelos,De 12 a 17 años,De 12 a 17 años total,2020,0
+17,Morelos,De 12 a 17 años,De 12 a 17 años total,2021,0
+17,Morelos,De 12 a 17 años,De 12 a 17 años total,2022,2
+17,Morelos,De 12 a 17 años,De 12 a 17 años acompañados,2018,3
+17,Morelos,De 12 a 17 años,De 12 a 17 años acompañados,2019,11
+17,Morelos,De 12 a 17 años,De 12 a 17 años acompañados,2020,0
+17,Morelos,De 12 a 17 años,De 12 a 17 años acompañados,2021,0
+17,Morelos,De 12 a 17 años,De 12 a 17 años acompañados,2022,2
+17,Morelos,De 12 a 17 años,De 12 a 17 años no acompañados,2018,12
+17,Morelos,De 12 a 17 años,De 12 a 17 años no acompañados,2019,1
+17,Morelos,De 12 a 17 años,De 12 a 17 años no acompañados,2020,0
+17,Morelos,De 12 a 17 años,De 12 a 17 años no acompañados,2021,0
+17,Morelos,De 12 a 17 años,De 12 a 17 años no acompañados,2022,0

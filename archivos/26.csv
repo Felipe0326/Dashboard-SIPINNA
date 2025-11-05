@@ -1,12 +1,28 @@
-Clave_Geográfica,Nombre_Geográfico,Desagregación,,Clave_Geográfica,Nombre_Geográfico,Desagregación,
-17,Morelos,Nivel educativo y sexo,,17,Morelos,Nivel educativo,
-Ciclo escolar,,Hombres,Mujeres,Ciclo escolar,Primaria,Secundaria,Media superior
-2018-2019,Primaria,1.2,0.8,2018-2019,1.0,5.2,17.1
-,Secundaria,6.0,4.5,2019-2020,1.0,3.2,14.7
-,Media superior,19.7,14.6,2020-2021,1.0,4.5,16.3
-2019-2020,Primaria,0.9,1.0,,,,
-,Secundaria,4.2,2.3,,,,
-,Media superior,17.0,12.5,,,,
-2020-2021,Primaria,1.2,0.9,,,,
-,Secundaria,5.8,3.2,,,,
-,Media superior,20.0,12.8,,,,
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,Nivel educativo y sexo,Primaria Hombres,2018-2019,1.2
+17,Morelos,Nivel educativo y sexo,Primaria Mujeres,2018-2019,0.8
+17,Morelos,Nivel educativo y sexo,Secundaria Hombres,2018-2019,6.0
+17,Morelos,Nivel educativo y sexo,Secundaria Mujeres,2018-2019,4.5
+17,Morelos,Nivel educativo y sexo,Media superior Hombres,2018-2019,19.7
+17,Morelos,Nivel educativo y sexo,Media superior Mujeres,2018-2019,14.6
+17,Morelos,Nivel educativo y sexo,Primaria Hombres,2019-2020,0.9
+17,Morelos,Nivel educativo y sexo,Primaria Mujeres,2019-2020,1.0
+17,Morelos,Nivel educativo y sexo,Secundaria Hombres,2019-2020,4.2
+17,Morelos,Nivel educativo y sexo,Secundaria Mujeres,2019-2020,2.3
+17,Morelos,Nivel educativo y sexo,Media superior Hombres,2019-2020,17.0
+17,Morelos,Nivel educativo y sexo,Media superior Mujeres,2019-2020,12.5
+17,Morelos,Nivel educativo y sexo,Primaria Hombres,2020-2021,1.2
+17,Morelos,Nivel educativo y sexo,Primaria Mujeres,2020-2021,0.9
+17,Morelos,Nivel educativo y sexo,Secundaria Hombres,2020-2021,5.8
+17,Morelos,Nivel educativo y sexo,Secundaria Mujeres,2020-2021,3.2
+17,Morelos,Nivel educativo y sexo,Media superior Hombres,2020-2021,20.0
+17,Morelos,Nivel educativo y sexo,Media superior Mujeres,2020-2021,12.8
+17,Morelos,Nivel educativo,Primaria,2018-2019,1.0
+17,Morelos,Nivel educativo,Secundaria,2018-2019,5.2
+17,Morelos,Nivel educativo,Media superior,2018-2019,17.1
+17,Morelos,Nivel educativo,Primaria,2019-2020,1.0
+17,Morelos,Nivel educativo,Secundaria,2019-2020,3.2
+17,Morelos,Nivel educativo,Media superior,2019-2020,14.7
+17,Morelos,Nivel educativo,Primaria,2020-2021,1.0
+17,Morelos,Nivel educativo,Secundaria,2020-2021,4.5
+17,Morelos,Nivel educativo,Media superior,2020-2021,16.3

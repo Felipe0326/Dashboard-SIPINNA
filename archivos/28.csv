@@ -1,4 +1,5 @@
-Clave_Geográfica,Nombre_Geográfico,,Desagregación,
-16,Morelos,,Total,
-Año,2018,2019,2020,2021
-Valor,32.4,32.4,32.5,32.6
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+16,Morelos,Total,Total,2018,32.4
+16,Morelos,Total,Total,2019,32.4
+16,Morelos,Total,Total,2020,32.5
+16,Morelos,Total,Total,2021,32.6

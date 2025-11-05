@@ -1,4 +1,3 @@
-Clave_Geográfica,Nombre_Geográfico,,Desagregación
-17,Morelos,,Total 
-Año,2014,,2018
-Valor,75.1,,77.1
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,Total,Total,2014,75.1
+17,Morelos,Total,Total,2018,77.1
