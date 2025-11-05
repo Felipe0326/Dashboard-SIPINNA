@@ -1,4 +1,5 @@
-Tasa de mortalidad en niñas y niños menores de 1 año en Morelos 2018-2021.,,,,,
-Clave_Geográfica,17,Nombre_Geográfico,Morelos,Desagregación,Anual
-Año,,2018,2019,2020,2021
-Valor,,10.7,10.2,6.9,7.4
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,Anual,Total,2018,10.7
+17,Morelos,Anual,Total,2019,10.2
+17,Morelos,Anual,Total,2020,6.9
+17,Morelos,Anual,Total,2021,7.4

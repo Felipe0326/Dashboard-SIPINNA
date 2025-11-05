@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SIPINNA Morelos – Tableros</title>
 
-  <!-- Tailwind + Chart.js + Ionicons + PapaParse -->
+  <!-- Tailwind + Chart.js + PapaParse + Ionicons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -124,7 +124,7 @@
           </div>
 
           <div id="detalle-contenido" class="hidden">
-            <!-- Se removió el bloque "Explorar Datos" con KPIs -->
+            <!-- (Se removió el bloque "Explorar Datos") -->
             <div class="p-6 lg:p-8 bg-background border-b border-ring">
               <div id="detalle-filtros-contenedor" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
               <p id="detalle-hint" class="hint mt-3 hidden">No hay datos para la combinación de filtros actual. Se restableció un filtro a “Todos”.</p>
@@ -200,6 +200,14 @@
       {"id":"38","nombre":"Mecanismos de participación 0–17","dominio":"Participación y acceso a la información","derecho":"Participación","dimension":"Participación","unidad":"Número","fuente_oficial":"% de mecanismos de participación","fuente":"SE-SIPINNA 2018–2022","descripcion":"Espacios institucionales sostenibles."},
       {"id":"39","nombre":"Reportes de Incidencias Delictivas (SESNSP)","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Reportes","fuente_oficial":"SESNSP","fuente":"SESNSP","descripcion":"Reportes contra menores (tipo, modalidad, sexo)."}
     ];
+
+    // === Reglas específicas para 03, 06, 07, 08 (solo esto) ===
+    const SPECIAL = {
+      "03": { onlySerie: true, defaultSerie: "De 10 a 14 años" },
+      "06": { noFilters: true },
+      "07": { noFilters: true },
+      "08": { noFilters: true, kpiRegex: /kpi\s*8\s*-\s*(\d{4})/i } // respeta etiqueta "kpi 8-YYYY" y ordena por año
+    };
 
     // ==========================
     //   ESTADO Y ARRANQUE
@@ -560,9 +568,14 @@
     // ==========================
     function procesarYConstruirFiltros(datos){
       let {header, rows} = datos;
+
+      // === reglas por card ===
+      const id = datosDetalleActual.id;
+      const special = SPECIAL[id] || {};
+
       const analysis = {labelIndex:-1, metricIndices:[], categoryIndices:[]};
 
-      // Elegir la columna etiqueta priorizando algunos nombres
+      // Elegir la columna etiqueta (prioriza algunos nombres)
       const prefer = ['Subtipo de delito','Nombre Geográfico','Nombre Geográfica','Nombre','Desagregación','Ciclo escolar','Año','Etiqueta'];
       for(const name of prefer){
         const idx = header.findIndex(h=>h.trim().toLowerCase()===name.toLowerCase());
@@ -573,7 +586,7 @@
         if(analysis.labelIndex===-1) analysis.labelIndex = 0;
       }
 
-      // Clasificación de columnas
+      // Clasificar columnas
       header.forEach((h,i)=>{
         if(i===analysis.labelIndex) return;
         const isNum = ratioNumericoCol(rows, i) >= 0.6;
@@ -587,7 +600,7 @@
         }
       });
 
-      // Fallback a conteo si no hay métricas
+      // Fallback a conteo si no hay métricas numéricas
       if(analysis.metricIndices.length===0){
         const conteos = {};
         rows.forEach(r=>{
@@ -601,14 +614,23 @@
         analysis.categoryIndices=[];
       }
 
-      datosDetalleActual = {...datosDetalleActual, header, rows, analysis};
+      // === aplicar reglas solicitadas ===
+      if(special.noFilters){
+        // Quitar todos los filtros (cards 06, 07, 08)
+        analysis.categoryIndices = [];
+      }else if(special.onlySerie){
+        // Dejar solo el filtro "Serie" (card 03)
+        analysis.categoryIndices = analysis.categoryIndices.filter(c => c.label.toLowerCase() === 'serie');
+      }
+
+      datosDetalleActual = {...datosDetalleActual, header, rows, analysis, special};
 
       // Controles de filtros
       const cont = document.getElementById('detalle-filtros-contenedor');
       let html='';
 
-      // Selector de Métrica (si hay varias)
-      if(analysis.metricIndices.length>1){
+      // Selector de Métrica: solo si hay >1 (respetando tu UX)
+      if(analysis.metricIndices.length>1 && !special.noFilters){
         html += `<div>
           <label for="filtro-metrica" class="block text-sm font-medium text-muted mb-1">Métrica</label>
           <select id="filtro-metrica" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
@@ -617,39 +639,51 @@
         </div>`;
       }
 
-      // Selectores de categorías (si existen)
-      analysis.categoryIndices.forEach(cat=>{
-        html += `<div>
-          <label for="filtro-cat-${cat.index}" class="block text-sm font-medium text-muted mb-1">${cat.label}</label>
-          <select id="filtro-cat-${cat.index}" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-            <option value="todos">Todos</option>
-            ${cat.options.map(o=>`<option value="${o}">${o}</option>`).join('')}
-          </select>
-        </div>`;
-      });
+      // Selectores de categorías
+      if(!special.noFilters){
+        analysis.categoryIndices.forEach(cat=>{
+          html += `<div>
+            <label for="filtro-cat-${cat.index}" class="block text-sm font-medium text-muted mb-1">${cat.label}</label>
+            <select id="filtro-cat-${cat.index}" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+              <option value="todos">Todos</option>
+              ${cat.options.map(o=>`<option value="${o}">${o}</option>`).join('')}
+            </select>
+          </div>`;
+        });
+      }
 
+      // Render de contenedor de filtros
       if(html===''){
         cont.innerHTML = `<div class="md:col-span-3 text-muted text-sm">Este indicador no tiene filtros adicionales disponibles.</div>`;
       }else{
         cont.innerHTML = html;
         cont.querySelectorAll('select').forEach(sel=> sel.addEventListener('change', onFiltroChange));
-        // Inicial: aplicar cascada para sincronizar opciones
-        actualizarOpcionesCascada();
       }
+
+      // Default de Serie para card 03
+      if(special.onlySerie && special.defaultSerie){
+        const serieSel = cont.querySelector('[id^="filtro-cat-"]');
+        if(serieSel){
+          const opt = [...serieSel.options].find(o => (o.value||'').toString().trim().toLowerCase() === special.defaultSerie.toLowerCase());
+          if(opt){ serieSel.value = opt.value; }
+        }
+      }
+
+      // Oculta el hint de reseteo
+      document.getElementById('detalle-hint').classList.add('hidden');
 
       actualizarGraficaYTabla();
     }
 
     // --- Cascada: actualizar opciones en cada filtro según otros filtros ---
     function onFiltroChange(e){
-      actualizarOpcionesCascada(e && e.target ? e.target.id : null);
       actualizarGraficaYTabla();
     }
 
     function obtenerEstadoFiltros(){
       const {analysis} = datosDetalleActual;
       const estado = {};
-      analysis.categoryIndices.forEach(cat=>{
+      (analysis.categoryIndices||[]).forEach(cat=>{
         const el = document.getElementById(`filtro-cat-${cat.index}`);
         estado[cat.index] = el ? el.value : 'todos';
       });
@@ -661,49 +695,10 @@
       return rows.filter(r => indices.every(idx => estado[idx]==='todos' || r[idx]===estado[idx]));
     }
 
-    function actualizarOpcionesCascada(ultimoId){
-      if(!datosDetalleActual) return;
-      const {rows, analysis} = datosDetalleActual;
-      const estado = obtenerEstadoFiltros();
-
-      let huboReset = false;
-
-      analysis.categoryIndices.forEach(cat=>{
-        const selId = `filtro-cat-${cat.index}`;
-        const el = document.getElementById(selId);
-        if(!el) return;
-
-        // Construir estado temporal sin este filtro para calcular opciones válidas
-        const estadoSinEste = {...estado};
-        delete estadoSinEste[cat.index];
-        const candidatos = filtrarConEstado(rows, estadoSinEste).map(r=>r[cat.index]);
-        const opcionesValidas = Array.from(new Set(candidatos.filter(x=>x!=='' && x!==null && typeof x!=='undefined'))).sort();
-
-        // Reconstruir opciones del select
-        const valorActual = el.value;
-        el.innerHTML = `<option value="todos">Todos</option>` + opcionesValidas.map(o=>`<option value="${o}">${o}</option>`).join('');
-
-        // Mantener selección si sigue siendo válida; de lo contrario, resetear a 'todos'
-        if(valorActual && opcionesValidas.includes(valorActual)){
-          el.value = valorActual;
-        }else{
-          el.value = 'todos';
-          if(ultimoId === selId) huboReset = true;
-        }
-      });
-
-      const hint = document.getElementById('detalle-hint');
-      if(huboReset){
-        hint.classList.remove('hidden');
-      }else{
-        hint.classList.add('hidden');
-      }
-    }
-
     function actualizarGraficaYTabla(){
       if(!datosDetalleActual) return;
 
-      const {header, rows, analysis} = datosDetalleActual;
+      const {header, rows, analysis, special} = datosDetalleActual;
       const {labelIndex, categoryIndices} = analysis;
 
       // Métrica seleccionada
@@ -718,7 +713,7 @@
 
       if(datosFiltrados.length === 0){
         // resetear todos a 'todos'
-        categoryIndices.forEach(cat=>{
+        (categoryIndices||[]).forEach(cat=>{
           const el = document.getElementById(`filtro-cat-${cat.index}`);
           if(el) el.value = 'todos';
         });
@@ -738,25 +733,40 @@
 
       let datos = Array.from(agreg, ([label,value])=>({label,value}));
 
-      // Orden
-      const lbl = (header[labelIndex]||'').toLowerCase();
-      const esSerie = /\b(añ|anio|año|ciclo)\b/.test(lbl);
-      if(esSerie){ datos.sort((a,b)=> a.label.toString().localeCompare(b.label.toString())); }
-      else{ datos.sort((a,b)=> b.value - a.value); }
+      // === Orden y eje (barras verticales SIEMPRE) ===
+      let eje = 'x';
 
-      const top = (esSerie || datos.length<=20) ? datos : datos.slice(0,20);
-      const eje = esSerie ? 'x' : 'y';
+      if(special && special.kpiRegex){
+        // Card 08: respeta etiqueta "kpi 8-YYYY" pero ordena por año interno
+        datos.forEach(d=>{
+          const m = (d.label||'').toString().match(special.kpiRegex);
+          d._year = m ? parseInt(m[1],10) : null;
+        });
+        datos.sort((a,b)=>{
+          if(a._year!==null && b._year!==null) return a._year - b._year;
+          return a.label.toString().localeCompare(b.label.toString());
+        });
+      }else{
+        // Para campos tipo "Año"
+        const lbl = (header[labelIndex]||'').toLowerCase();
+        const esSerieTemporal = /\b(añ|anio|año|ciclo)\b/.test(lbl);
+        if(esSerieTemporal){
+          datos.sort((a,b)=> a.label.toString().localeCompare(b.label.toString()));
+        }else{
+          // no temporal: orden por valor desc
+          datos.sort((a,b)=> b.value - a.value);
+        }
+      }
 
-      // Gráfica (barras siempre)
       const ctx = document.getElementById('grafica-indicador').getContext('2d');
       if(graficaActual) graficaActual.destroy();
       graficaActual = new Chart(ctx,{
         type: 'bar',
         data:{
-          labels: top.map(d=>d.label),
+          labels: datos.map(d=>d.label), // muestra etiqueta exacta (incluye "kpi 8-YYYY")
           datasets:[{
             label: metricaLabel,
-            data: top.map(d=>d.value),
+            data: datos.map(d=>d.value),
             backgroundColor: 'rgba(113,120,91,0.7)',
             borderColor: 'rgba(113,120,91,1)',
             borderWidth: 1
@@ -765,16 +775,16 @@
         options:{
           responsive:true,
           maintainAspectRatio:false,
-          indexAxis: eje,
+          indexAxis: eje, // barras verticales
           scales:{
-            [eje==='x'?'y':'x']:{beginAtZero:true},
-            [eje]:{ticks:{font:{size: top.length>15 && eje==='y' ? 10 : 12}}}
+            y:{beginAtZero:true},
+            x:{ticks:{autoSkip:false,maxRotation:0,minRotation:0}}
           },
           plugins:{ legend:{display:true} }
         }
       });
 
-      // Tabla
+      // ===== Tabla =====
       const thead = document.getElementById('detalle-tabla-header');
       const tbody = document.getElementById('detalle-tabla-body');
 

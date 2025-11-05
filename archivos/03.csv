@@ -1,4 +1,9 @@
-Clave_Geográfica,17,Nombre_Geográfico,Morelos,Desagregación,Por grupo de edad y año
-Año,,2018,2019,2020,2021
-De 10 a 14 años,,1.61,1.6,1.6,1.61
-De 12 a 14 años,,2.66,2.65,2.66,2.67
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,Por grupo de edad y año,De 10 a 14 años,2018,1.61
+17,Morelos,Por grupo de edad y año,De 10 a 14 años,2019,1.60
+17,Morelos,Por grupo de edad y año,De 10 a 14 años,2020,1.60
+17,Morelos,Por grupo de edad y año,De 10 a 14 años,2021,1.61
+17,Morelos,Por grupo de edad y año,De 12 a 14 años,2018,2.66
+17,Morelos,Por grupo de edad y año,De 12 a 14 años,2019,2.65
+17,Morelos,Por grupo de edad y año,De 12 a 14 años,2020,2.66
+17,Morelos,Por grupo de edad y año,De 12 a 14 años,2021,2.67
