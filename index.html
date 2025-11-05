@@ -1,525 +1,835 @@
 <!DOCTYPE html>
 <html lang="es" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIPINNA Morelos – Tableros</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SIPINNA Morelos – Tableros</title>
 
-    <style>
-        /* Paleta de colores institucional Tlamati */
-        :root {
-            --ink: #2B2B2B;
-            --muted: #6F6F6F;
-            --bg: #F5F6F8;
-            --card: #FFFFFF;
-            --ring: #E7E5E0;
-            --pri: #71785B;     /* verde Tlamati */
-            --sec: #773357;     /* vino Tlamati */
-            --acc: #4D4F53;     /* gris acento */
-            --cta: #BC9B73;     /* dorado suave */
-        }
+  <!-- Tailwind + Chart.js + Ionicons + PapaParse -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-        /* Estilos generales y utilidades */
-        body { background-color: var(--bg); color: var(--ink); }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #d1d1d1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #b1b1b1; }
-        .vista { display: none; opacity: 0; transition: opacity 0.3s ease-in-out; }
-        .vista.activa { display: block; opacity: 1; }
-        .spinner { border-top-color: var(--pri); animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-    </style>
-    
-    <script>
-        // Integración de la paleta de colores con Tailwind CSS
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'ink': 'var(--ink)',
-                        'muted': 'var(--muted)',
-                        'background': 'var(--bg)',
-                        'card': 'var(--card)',
-                        'ring': 'var(--ring)',
-                        'pri': 'var(--pri)',
-                        'sec': 'var(--sec)',
-                        'acc': 'var(--acc)',
-                        'cta': 'var(--cta)',
-                    }
-                }
-            }
+  <style>
+    :root{
+      --ink:#2B2B2B; --muted:#6F6F6F; --bg:#F5F6F8; --card:#FFFFFF; --ring:#E7E5E0;
+      --pri:#71785B; --sec:#773357; --acc:#4D4F53; --cta:#BC9B73;
+    }
+    body{background:var(--bg);color:var(--ink)}
+    ::-webkit-scrollbar{width:8px;height:8px}
+    ::-webkit-scrollbar-track{background:#f1f1f1}
+    ::-webkit-scrollbar-thumb{background:#d1d1d1;border-radius:4px}
+    ::-webkit-scrollbar-thumb:hover{background:#b1b1b1}
+    .vista{display:none;opacity:0;transition:opacity .3s ease-in-out}
+    .vista.activa{display:block;opacity:1}
+    .spinner{border-top-color:var(--pri);animation:spin 1s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .kpi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+    @media(min-width:768px){.kpi{grid-template-columns:repeat(4,minmax(0,1fr));}}
+    .hint{font-size:.85rem;color:#773357}
+  </style>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors:{
+            ink:'var(--ink)', muted:'var(--muted)', background:'var(--bg)', card:'var(--card)',
+            ring:'var(--ring)', pri:'var(--pri)', sec:'var(--sec)', acc:'var(--acc)', cta:'var(--cta)'
+          }
         }
-    </script>
+      }
+    }
+  </script>
 </head>
+
 <body class="bg-background font-sans antialiased">
+  <!-- HEADER -->
+  <header class="bg-pri shadow-lg sticky top-0 z-20">
+    <div class="container mx-auto px-6 py-3 flex justify-between items-center">
+      <div class="flex items-center">
+        <img src="img/logo_agencia_territorios.png" alt="Logo Morelos" class="h-12 mr-4">
+      </div>
+      <div class="text-center">
+        <h1 class="text-2xl font-bold text-card">SIPINNA Morelos – Tableros</h1>
+        <p class="text-sm text-ring">39 indicadores. Selecciona uno para ver su ficha técnica y gráfica.</p>
+      </div>
+      <div class="w-1/4"></div>
+    </div>
+  </header>
 
-    <header class="bg-pri shadow-lg sticky top-0 z-20">
-        <div class="container mx-auto px-6 py-3 flex justify-between items-center">
-            <div class="flex items-center">
-                <img src="img/logo_agencia_territorios.png" alt="Logo Morelos" class="h-12 mr-4">
-            </div>
-            <div class="text-center">
-                <h1 class="text-2xl font-bold text-card">SIPINNA Morelos – Tableros</h1>
-                <p class="text-sm text-ring">39 indicadores. Selecciona uno para ver su ficha técnica y gráfica.</p>
-            </div>
-            <div class="w-1/4">
+  <!-- MAIN -->
+  <main>
+    <!-- VISTA LISTA -->
+    <div id="vista-principal" class="vista activa">
+      <div class="container mx-auto p-6 lg:p-10">
+        <!-- Filtros globales -->
+        <div class="mb-8 p-6 bg-card rounded-xl shadow-sm border border-ring">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="filtro-busqueda" class="block text-sm font-medium text-muted mb-1">Buscar indicador</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <ion-icon name="search-outline" class="text-muted"></ion-icon>
                 </div>
-        </div>
-    </header>
-
-    <main>
-        <div id="vista-principal" class="vista activa">
-            <div class="container mx-auto p-6 lg:p-10">
-                <div class="mb-8 p-6 bg-card rounded-xl shadow-sm border border-ring">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label for="filtro-busqueda" class="block text-sm font-medium text-muted mb-1">Buscar indicador</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <ion-icon name="search-outline" class="text-muted"></ion-icon>
-                                </div>
-                                <input type="text" id="filtro-busqueda" class="w-full rounded-md border-ring pl-10 shadow-sm focus:border-pri focus:ring-pri" placeholder="Ej: Pobreza, Educación...">
-                            </div>
-                        </div>
-                        <div>
-                            <label for="filtro-dominio" class="block text-sm font-medium text-muted mb-1">Dominio</label>
-                            <select id="filtro-dominio" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-                                <option value="todos">Todos los Dominios</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label for="filtro-derecho" class="block text-sm font-medium text-muted mb-1">Derecho</label>
-                            <select id="filtro-derecho" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-                                <option value="todos">Todos los Derechos</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="galeria-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    </div>
+                <input id="filtro-busqueda" type="text" placeholder="Ej: Pobreza, Educación..."
+                  class="w-full rounded-md border-ring pl-10 shadow-sm focus:border-pri focus:ring-pri"/>
+              </div>
             </div>
+            <div>
+              <label for="filtro-dominio" class="block text-sm font-medium text-muted mb-1">Dominio</label>
+              <select id="filtro-dominio" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+                <option value="todos">Todos los Dominios</option>
+              </select>
+            </div>
+            <div>
+              <label for="filtro-derecho" class="block text-sm font-medium text-muted mb-1">Derecho</label>
+              <select id="filtro-derecho" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+                <option value="todos">Todos los Derechos</option>
+              </select>
+            </div>
+          </div>
         </div>
 
-        <div id="vista-detalle" class="vista">
-            <div class="container mx-auto p-6 lg:p-10 max-w-7xl">
-                <div class="mb-6">
-                    <button id="btn-volver" class="flex items-center text-sec font-semibold hover:text-cta transition-colors">
-                        <ion-icon name="arrow-back-outline" class="mr-2 text-xl"></ion-icon>
-                        Volver a Indicadores
-                    </button>
-                </div>
-                <div class="bg-card rounded-xl shadow-xl border border-ring">
-                    <header class="bg-sec text-card p-6 lg:p-8 rounded-t-xl">
-                        <h2 id="detalle-titulo" class="text-3xl font-bold text-card">Cargando...</h2>
-                        <p id="detalle-descripcion" class="text-ring/90 mt-3 text-base"></p>
-                        <p id="detalle-fuente" class="text-sm text-ring/70 mt-3"></p>
-                    </header>
-                    <div id="detalle-loader" class="p-8 text-center hidden">
-                        <div class="spinner w-12 h-12 rounded-full border-4 border-ring mx-auto mb-4"></div>
-                        <p class="text-muted">Cargando datos del indicador...</p>
-                    </div>
-                    <div id="detalle-error" class="p-8 m-6 bg-red-50 border border-red-200 text-red-800 rounded-lg hidden">
-                        <h3 class="font-bold text-lg mb-2">Error al Cargar los Datos</h3>
-                        <p id="detalle-error-mensaje"></p>
-                    </div>
-                    <div id="detalle-contenido" class="hidden">
-                        <div class="p-6 lg:p-8 bg-background border-b border-ring">
-                            <h3 class="text-xl font-semibold text-acc mb-4">Explorar Datos</h3>
-                            <div id="detalle-filtros-contenedor" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                </div>
-                        </div>
-                        <div class="p-6 lg:p-8">
-                            <h3 class="text-xl font-semibold text-acc mb-4">Gráfica</h3>
-                            <div class="h-[500px] w-full">
-                                <canvas id="grafica-indicador"></canvas>
-                            </div>
-                        </div>
-                        <div class="p-6 lg:p-8 border-t border-ring">
-                            <h3 class="text-xl font-semibold text-acc mb-4">Tabla de Datos</h3>
-                            <div id="detalle-tabla-contenedor" class="w-full overflow-x-auto border border-ring rounded-lg max-h-[600px]">
-                                <table class="min-w-full divide-y divide-ring">
-                                    <thead id="detalle-tabla-header" class="bg-sec sticky top-0"></thead>
-                                    <tbody id="detalle-tabla-body" class="bg-card divide-y divide-ring"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- Cards -->
+        <div id="galeria-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </div>
+
+    <!-- VISTA DETALLE -->
+    <div id="vista-detalle" class="vista">
+      <div class="container mx-auto p-6 lg:p-10 max-w-7xl">
+        <div class="mb-6">
+          <button id="btn-volver" class="flex items-center text-sec font-semibold hover:text-cta transition-colors">
+            <ion-icon name="arrow-back-outline" class="mr-2 text-xl"></ion-icon>
+            Volver a Indicadores
+          </button>
         </div>
-    </main>
 
-    <script>
-        const DB_INDEX = [
-            {"id": "01", "nombre": "Población de 0 a 17 años", "dominio": "Contexto demográfico", "derecho": "No aplica", "dimension": "No aplica", "unidad": "Número de personas", "fuente_oficial": "Población de 0 a 17 años", "fuente": "Estimación de la SE-SIPINNA con base en datos del INEGI 2020", "descripcion": "Mide el número de niñas, niños y adolescentes de 0 a 17 años."},
-            {"id": "02", "nombre": "Población de 0 a 17 años indígena y afrodescendiente", "dominio": "Contexto demográfico", "derecho": "No aplica", "dimension": "No aplica", "unidad": "Número de personas", "fuente_oficial": "Población de 0 a 17 años indígena y afrodescendiente", "fuente": "Estimaciones de la SE-SIPINNA con base en datos del INEGI. CENSO 2020", "descripcion": "Mide el número de niñas, niños y adolescentes de 0 a 17 años indígena y afrodescendiente."},
-            {"id": "03", "nombre": "Tasa de fecundidad de niñas de 10 a 14 años", "dominio": "Supervivencia", "derecho": "Protección de la salud y seguridad social", "dimension": "Salud sexual y reproductiva", "unidad": "Tasa por cada 1,000", "fuente_oficial": "Razón de fecundidad de niñas de 10 a 14 años", "fuente": "Estimaciones de CONAPO e INEGI.", "descripcion": "Cociente del número de nacimientos ocurridos en niñas entre 10 y 14 años... por 1 000."},
-            {"id": "04", "nombre": "Número de nacimientos de madres entre 10 y 17 años", "dominio": "Supervivencia", "derecho": "Protección de la salud y seguridad", "dimension": "Salud sexual y reproductiva", "unidad": "Número de nacimientos", "fuente_oficial": "Nacimientos cuyas madres tenían entre 10 y 17 años.", "fuente": "Estimación de la SE-SIPINNA con base en datos de la Secretaría de Salud 2022", "descripcion": "Es el número de nacimientos que ocurrieron en niñas y adolescentes que tenían entre 10 a 17 años de edad."},
-            {"id": "05", "nombre": "Mortalidad materna por cada 100 mil nacidos vivos", "dominio": "Desarrollo", "derecho": "Vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Supervivencia", "unidad": "Número de muertes maternas por cada 100 mil nacidos vivos", "fuente_oficial": "Razón de mortalidad materna", "fuente": "Estimaciones de la Secretaría de Salud/Dirección General de Información en Salud", "descripcion": "Número de defunciones de mujeres mientras se encuentren embarazadas o dentro de los 42 días siguientes..."},
-            {"id": "06", "nombre": "Tasa de Mortalidad en niñas y niños menores de 1 año", "dominio": "Desarrollo", "derecho": "A vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Supervivencia", "unidad": "Tasa por cada 1,000", "fuente_oficial": "Tasa de Mortalidad Infantil por cada 1,000 nacidos vivos", "fuente": "Estimaciones de la Secretaría de Salud/Dirección General de Información en Salud", "descripcion": "Es el número de defunciones de niños menores de 1 año de edad por cada mil nacidos vivos, en el año de referencia."},
-            {"id": "07", "nombre": "Tasa de mortalidad en niñas y niños menores de 5 años por infecciones respiratorias agudas", "dominio": "Desarrollo", "derecho": "A vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Supervivencia", "unidad": "Tasa por cada 100,000", "fuente_oficial": "Tasa de mortalidad en niñas y niños menores de 5 años por infecciones respiratorias agudas", "fuente": "Estimaciones de Secretaría de Salud con base en los datos de mortalidad y proyecciones de CONAPO 2018-2021.", "descripcion": "Número de defunciones en menores de 5 años de edad por infecciones respiratorias agudas por cada 100,000."},
-            {"id": "08", "nombre": "Tasa de mortalidad infantil en niñas y niños menores de 5 años por enfermedades diarreicas", "dominio": "Desarrollo", "derecho": "A vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Supervivencia", "unidad": "Tasa por cada 100 mil", "fuente_oficial": "Tasa de mortalidad infantil en niñas y niños menores de 5 años por enfermedades diarreicas", "fuente": "Estimaciones de Secretaría de Salud con base en los datos de mortalidad y proyecciones de CONAPO 2018-2021.", "descripcion": "Número de defunciones en los menores de 5 años de edad por enfermedades diarreicas por cada 100 mil."},
-            {"id": "09", "nombre": "Población de adolescentes de 12 a 17 años en el sistema de justicia penal", "dominio": "Protección", "derecho": "Seguridad jurídica y debido proceso", "dimension": "Justicia para adolescentes", "unidad": "Número de personas", "fuente_oficial": "Población de adolescentes en el sistema de justicia penal", "fuente": "Estimaciones de la SE-SIPINNA con base en datos del INEGI. Encuesta Nacional de Adolescentes en el Sistema de Justicia Penal (ENASJUP) 2017-2020.", "descripcion": "Personas adolescentes de 12 a 17 años que se encuentren en el Sistema Integral de Justicia Penal para Adolescentes (SIJPA)."},
-            {"id": "10", "nombre": "Población de 0 a 19 años usuarios de Centros de Asistencia Social", "dominio": "Protección", "derecho": "Vivir en familia", "dimension": "Centros de asistencia social", "unidad": "Número de personas", "fuente_oficial": "Población de 0 a 19 años usuarios de Centros de Asistencia Social", "fuente": "Estimaciones del INEGI con base en el CENSO 2020 y en la encuesta INTERCENSAL 205", "descripcion": "Número de personas de 0 a 19 años que recibe alojamiento y otros servicios que proporciona el establecimiento de asistencia social."},
-            {"id": "11", "nombre": "Porcentaje de niñas, niños y adolescentes de 0 a 17 años que habitan en viviendas sin hacinamiento", "dominio": "Desarrollo", "derecho": "Vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Vivienda", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de niñas, niños y adolescentes que habitan en viviendas sin hacinamiento", "fuente": "Estimaciones del CONEVAL con base en la Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH) 2016-2020.", "descripcion": "Porcentaje de niñas, niños y adolescentes en viviendas sin hacinamiento (condición que se presenta cuando hay 2.5 habitantes por dormitorio)."},
-            {"id": "12", "nombre": "Porcentaje de población de adolescentes mujeres de 12 a 17 años en unión libre", "dominio": "Supervivencia", "derecho": "A vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Uniones", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de población femenina de 12 a 17 años en unión libre", "fuente": "Estimaciones de la SE-SIPINNA con base en datos del INEGI. CENSO 2020", "descripcion": "Porcentaje de personas que viven con otra sin haber contraído matrimonio civil o religioso."},
-            {"id": "13", "nombre": "Porcentaje de niñas, niños y adolescentes de 6 a 17 años usuaria de internet", "dominio": "Participación y acceso a la información", "derecho": "Derecho de acceso a las tecnologías de la información y comunicación", "dimension": "Acceso a TIC", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de población de 6 a 17 años usuaria de internet", "fuente": "Estimaciones de la SE-SIPINNA con base en la Encuesta Nacional sobre Disponibilidad y Uso de Tecnologías de la Información en los Hogares (ENDUTIH) del INEGI 2018-2021", "descripcion": "Porcentaje de personas de 6 años a 17 años que ha accedido y realizado alguna actividad en Internet en los últimos doce meses."},
-            {"id": "14", "nombre": "Porcentaje de niñas, niños y adolescentes de 0 a 17 años con carencia por acceso a la alimentación", "dominio": "Desarrollo", "derecho": "A vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Pobreza y bienestar", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de niñas, niños y adolescentes con carencia por acceso a la alimentación", "fuente": "Estimaciones del CONEVAL con base en la Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH) 2010-2020", "descripcion": "Se considera en situación de carencia por acceso a la alimentación nutritiva y de calidad a los hogares que presenten un grado de inseguridad alimentaria moderado o severo."},
-            {"id": "15", "nombre": "Porcentaje de niñas, niños y adolescentes de 0 a 17 años con carencia por acceso a los servicios básicos en la vivienda", "dominio": "Desarrollo", "derecho": "Vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Pobreza y bienestar", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de niñas, niños y adolescentes con carencia por acceso a los servicios básicos en la vivienda", "fuente": "Estimaciones del CONEVAL con base en la Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH) 2010-2020", "descripcion": "El indicador toma en consideración que la vivienda cuente con todos los servicios básicos (agua, drenaje, electricidad, combustible)."},
-            {"id": "16", "nombre": "Porcentaje de niñas, niños y adolescentes de 0 a 17 años en situación de pobreza", "dominio": "Desarrollo", "derecho": "Vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Pobreza y bienestar", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de niñas, niños y adolescentes en situación de pobreza", "fuente": "Estimaciones del CONEVAL con base en la Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH) 2010-2020", "descripcion": "Una persona se encuentra en situación de pobreza cuando tiene al menos una carencia social... y su ingreso es insuficiente."},
-            {"id": "17", "nombre": "Porcentaje de niñas, niños y adolescentes de 0 a 17 años con carencia por acceso a los servicios de salud", "dominio": "Desarrollo", "derecho": "Vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Pobreza y bienestar", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de niñas, niños y adolescentes con carencia por acceso a los servicios de salud", "fuente": "Estimaciones del CONEVAL con base en la Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH) 2010-2020", "descripcion": "La carencia por acceso a los servicios de salud considera el elemento mínimo de acceso, mediante la afiliación o el derecho a estos servicios médicos."},
-            {"id": "18", "nombre": "Porcentaje de niñas, niños y adolescentes de 0 a 17 años con carencia por acceso a la seguridad social", "dominio": "Desarrollo", "derecho": "Vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Pobreza y bienestar", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de niñas, niños y adolescentes con carencia por acceso a la seguridad social", "fuente": "Estimaciones del CONEVAL con base en la Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH) 2010-2020", "descripcion": "La seguridad social se refiere al “conjunto de mecanismos diseñados para garantizar los medios de subsistencia de los individuos y sus familias."},
-            {"id": "19", "nombre": "Porcentaje de NNA de 0 a 17 años con discapacidad o limitación con afiliación a servicios de salud", "dominio": "Desarrollo", "derecho": "Salud", "dimension": "Acceso a la salud", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de NNA con discapacidad o limitación con afiliación a servicios de salud", "fuente": "Estimaciones de la SE-SIPINNA con base en datos del INEGI, CENSO 2020", "descripcion": "Identifica a las personas con discapacidad como aquellas que tienen mucha dificultad o no pueden hacer al menos una de las actividades de la vida diaria."},
-            {"id": "20", "nombre": "Demanda satisfecha de métodos anticonceptivos modernos en adolescentes de 15 a 24 años", "dominio": "Supervivencia", "derecho": "Protección de la salud y seguridad social", "dimension": "Salud Sexual y reproductiva", "unidad": "Porcentaje", "fuente_oficial": "Proporción de mujeres de 15 a 24 años sexualmente activas con demanda satisfecha...", "fuente": "Estimaciones de CONAPO con base en la Encuesta Nacional de la Dinámica Demográfica 2014-2018", "descripcion": "Porcentaje de mujeres sexualmente activas de 15 a 24 años que hacen uso de métodos anticonceptivos modernos."},
-            {"id": "21", "nombre": "Eficiencia terminal de niñas, niños y adolescentes por nivel educativo", "dominio": "Desarrollo", "derecho": "Educación", "dimension": "Servicios educativos", "unidad": "Porcentaje", "fuente_oficial": "Eficiencia terminal de alumnos (as) por nivel educativo", "fuente": "Estimaciones de la SEP, con base en datos de la Dirección General de Planeación, Programación y Estadística Educativa (DGPPEE) 2018-2021", "descripcion": "Porcentaje de alumnos que concluye sus estudios, de acuerdo con la duración formal promedio establecida en cada nivel educativo."},
-            {"id": "22", "nombre": "Tasa neta de escolarización de adolescentes para nivel medio superior", "dominio": "Desarrollo", "derecho": "Educación", "dimension": "Acceso a la Educación", "unidad": "Tasa", "fuente_oficial": "Tasa neta de escolarización para nivel medio superior", "fuente": "Estimaciones de la SEP, con base en datos de la Dirección General de Planeación, Programación y Estadística Educativa (DGPPEE) 2018-2022", "descripcion": "Es el número de alumnas (os) en el nivel medio superior... en el rango de edad típico... por cada cien en el mismo grupo de edad."},
-            {"id": "23", "nombre": "Atención a niñas y niños en educación preescolar", "dominio": "Desarrollo", "derecho": "Educación", "dimension": "Servicios educativos", "unidad": "Tasa por cada cien", "fuente_oficial": "Atención a niñas y niños en educación preescolar", "fuente": "Estimaciones de la SEP, con base en datos de la Dirección General de Planeación, Programación y Estadística Educativa (DGPPEE) 2018-2022", "descripcion": "Alumnos en educación preescolar en edad típica de este nivel educativo... por cada cien de población de la misma edad."},
-            {"id": "24", "nombre": "Porcentaje de NNA de 3 a 17 años con discapacidad que no asiste a la escuela", "dominio": "Desarrollo", "derecho": "Educación", "dimension": "Acceso a la educación", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de la población de 3 a 17 años con discapacidad que no asiste a la escuela", "fuente": "Estimación de la SE-SIPINNA con base en datos del INEGI, CENSO 2020", "descripcion": "Identifica a las personas con discapacidad como aquellas que tienen mucha dificultad o no pueden hacer al menos una de las actividades de la vida diaria."},
-            {"id": "25", "nombre": "Porcentaje de niñas, niños y adolescentes de 0 a 17 años con rezago educativo", "dominio": "Desarrollo", "derecho": "Vivir en condiciones de bienestar y sano desarrollo integral", "dimension": "Pobreza y bienestar", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de niñas, niños y adolescentes con rezago educativo", "fuente": "Estimaciones del CONEVAL con base en la Encuesta Nacional de Ingresos y Gastos de los Hogares (ENIGH) 2010-2020", "descripcion": "La persona se considera como no carente sólo si está en edad escolar y asiste a la escuela o si de acuerdo a su edad ha concluido la primaria o secundaria."},
-            {"id": "26", "nombre": "Abandono escolar de niñas, niños y adolescentes de 0 a 17 años por nivel educativo", "dominio": "Desarrollo", "derecho": "Educación", "dimension": "Servicios educativos", "unidad": "Porcentaje", "fuente_oficial": "Abandono escolar de alumnos (as) por nivel educativo", "fuente": "Estimaciones de la SEP, con base en datos de la Dirección General de Planeación, Programación y Estadística Educativa (DGPPEE) 2018-2021", "descripcion": "Número de alumnos (as) matriculados que abandonan la escuela de un periodo escolar a otro, por cada cien alumnos."},
-            {"id": "27", "nombre": "Porcentaje de NNA indígenas en hogares de 6 a 17 años que saben leer y escribir", "dominio": "Desarrollo", "derecho": "Educación", "dimension": "Acceso a la educación", "unidad": "Porcentaje", "fuente_oficial": "Porcentaje de la población indígena en hogares de 6 a 17 años que saben leer y escribir", "fuente": "Estimaciones del Instituto Nacional de los Pueblos Indígenas con base en el Censo de Población y Vivienda 2020.", "descripcion": "El concepto de hogar indígena se ha definido como aquel donde el jefe(a), su cónyuge o alguno de los ascendientes... declararon hablar alguna lengua indígena."},
-            {"id": "28", "nombre": "Número de bibliotecas públicas, casas y centros de cultura por cada 100 mil NNA de 0 a 17 años", "dominio": "Participación y acceso a la información", "derecho": "Al descanso y al esparcimiento", "dimension": "Cultura y recreación", "unidad": "Tasa por cada 100mil", "fuente_oficial": "Número de bibliotecas públicas, casas y centros de cultura por cada 100 mil niñas, niños y adolescentes", "fuente": "Estimación de la Secretaría de Cultura con base en el Sistema de Información Cultural (SIC) y Proyecciones de CONAPO 2018-2021", "descripcion": "Es el número de bibliotecas públicas, casas y centros de cultura por cada 100 mil niñas, niños y adolescentes por entidad federativa."},
-            {"id": "29", "nombre": "Prevalencia de violencia total entre las adolescentes de 15 a 17 años a lo largo de su vida", "dominio": "Protección", "derecho": "Vida libre de violencia e integridad personal", "dimension": "Violencia y maltrato", "unidad": "Porcentaje", "fuente_oficial": "Prevalencia de violencia total entre las mujeres de 15 a 17 años a lo largo de su vida", "fuente": "Estimaciones del INEGI con base en la Encuesta Nacional sobre la Dinámica de las Relaciones en los Hogares (ENDIREH) 2016-2021", "descripcion": "Porcentaje de mujeres de 15 a 17 años que experimentaron una o más situaciones de violencia a lo largo de su vida."},
-            {"id": "30", "nombre": "Niñas, niños y adolescentes de 0 a 17 años desaparecidos (as) y no localizados (as)", "dominio": "Protección", "derecho": "Vida libre de violencia e integridad personal", "dimension": "Violencia y maltrato", "unidad": "Número de personas", "fuente_oficial": "Niñas, niños y adolescentes desaparecidos (as) y no localizados (as)", "fuente": "Estimaciones de la SE-SIPINNA con base en datos del Registro Nacional de Personas Desaparecidas y no localizadas (RNPDNO) 2018-2022", "descripcion": "Número de NNA en condición de desaparecidos o no localizados según las actas levantadas ante la Comisión Nacional de Búsqueda."},
-            {"id": "31", "nombre": "Número de suicidios en niñas, niños y adolescentes de 10 a 17 años", "dominio": "Protección", "derecho": "Vida libre de violencia e integridad personal", "dimension": "Violencia y maltrato", "unidad": "Número de personas", "fuente_oficial": "Número de suicidios en la población de 10 a 17 años", "fuente": "Estimación de la SE-SIPINNA con base en datos del INEGI en registros de mortalidad 2018-2021", "descripcion": "Registro del número de suicidios de niños, niñas y adolescentes definido como el acto de una persona, cuyo resultado destruye su propia existencia."},
-            {"id": "32", "nombre": "Número de feminicidios contra niñas y adolescentes de 0 a 17 años", "dominio": "Protección", "derecho": "Vida libre de violencia e integridad personal", "dimension": "Violencia y maltrato", "unidad": "Número de personas", "fuente_oficial": "Número de feminicidios contra la población de 0 a 17 años", "fuente": "Estimación de la SE-SIPINNA con base en datos del Secretariado Ejecutivo del Sistema Nacional de Seguridad Pública (SNSP) 2018-2022", "descripcion": "El feminicidio es definido como la muerte violenta de las mujeres por razones de género, tipificada en el sistema penal como feminicidio."},
-            {"id": "33", "nombre": "Lesiones por violencia sexual contra niñas, niños y adolescentes de 0 a 17 años", "dominio": "Protección", "derecho": "Vida libre de violencia e integridad personal", "dimension": "Violencia y maltrato", "unidad": "Número de lesiones", "fuente_oficial": "Lesiones por violencia sexual contra niñas, niños y adolescentes", "fuente": "Estimaciones de la SE-SIPINNA con base en datos de la Secretaría de Salud 2022", "descripcion": "La violencia sexual es definida como cualquier acto sexual, la tentativa de consumarlo u otro acto dirigido contra la sexualidad mediante coacción."},
-            {"id": "34", "nombre": "Eventos de NNA de 0 a 17 años presentados ante la autoridad migratoria", "dominio": "Protección", "derecho": "Derechos de niñas, niños y adolescentes migrantes", "dimension": "Migrantes y su atención", "unidad": "Número de eventos", "fuente_oficial": "Eventos de menores presentados ante la autoridad migratoria", "fuente": "Estimaciones de la SE-SIPINNA con base en datos de la Unidad de Política Migratoria 2018-2022", "descripcion": "Información se refiere a eventos de migrantes ingresados en las estaciones migratorias del INM por no acreditar su situación migratoria."},
-            {"id": "35", "nombre": "Tasa de ocupación no permitida de niños, niñas y adolescentes de 5 a 17 años", "dominio": "Protección", "derecho": "Vida Libre de Violencia e Integridad Personal", "dimension": "Trabajo", "unidad": "Porcentaje respecto a la población total de 5 a 17 años", "fuente_oficial": "Tasa de ocupación infantil no permitida", "fuente": "Estimaciones del INEGI con base en el Módulo de Trabajo Infantil 2015 y 2017 y en la Encuesta Nacional de Trabajo Infantil 2019", "descripcion": "Proporción de la población infantil ocupada que se encuentra por debajo de la edad mínima (5 a 14 años) para trabajar o en ocupaciones peligrosas (15 a 17 años)."},
-            {"id": "36", "nombre": "Tasa de homicidio de NNA por cada 100 mil menores de 18 años", "dominio": "Protección", "derecho": "Derecho a una vida libre de violencia y a la integridad personal", "dimension": "Violencia y maltrato", "unidad": "Tasa por cada 100 mil", "fuente_oficial": "Tasa de homicidio de niñas, niños y adolescentes por cada 100 mil menores de 18 años", "fuente": "Estimaciones del Secretariado Ejecutivo del Sistema Nacional de Seguridad Pública (SNSP) y CONAPO 2018-2020.", "descripcion": "Porcentaje de víctimas por homicidio (doloso y culposo) cuya edad se encuentra en el rango de 0 a 17 años... por cada 100 mil personas."},
-            {"id": "37", "nombre": "Lesiones por violencia física contra niñas, niños y adolescentes de 0 a 17 años", "dominio": "Protección", "derecho": "Vida libre de violencia e integridad personal", "dimension": "Violencia y maltrato", "unidad": "Número de lesiones", "fuente_oficial": "Lesiones por violencia física contra niñas, niños y adolescentes", "fuente": "Estimaciones de la SE-SIPINNA con base en datos de la Secretaría de Salud. Subsistema de Lesiones 2022", "descripcion": "Número de incidencias presentadas por violencia física, entendida como cualquier acto que ocasione daño no accidental, con uso de la fuerza física."},
-            {"id": "38", "nombre": "Mecanismos de participación para niñas, niños y adolescentes de 0 a 17 años", "dominio": "Participación y acceso a la información", "derecho": "Participación", "dimension": "Participación", "unidad": "Número", "fuente_oficial": "Porcentaje de mecanismos de participación", "fuente": "Estimaciones de la SE-SIPINNA 2018-2022", "descripcion": "Los mecanismos de participación son espacios institucionales, sostenibles, donde se utilizan recursos metodológicos, herramientas y recursos materiales."},
-            {"id": "39", "nombre": "Reportes de Incidencias Delictivas (SESNSP)", "dominio": "Protección", "derecho": "Vida libre de violencia e integridad personal", "dimension": "Violencia y maltrato", "unidad": "Reportes", "fuente_oficial": "Reportes de Incidencias Delictivas (SESNSP)", "fuente": "Secretariado Ejecutivo del Sistema Nacional de Seguridad Pública (SESNSP)", "descripcion": "Reportes de incidencias delictivas contra menores de edad (0-17) desglosados por tipo de delito, modalidad y sexo."}
-        ];
+        <div class="bg-card rounded-xl shadow-xl border border-ring">
+          <header class="bg-sec text-card p-6 lg:p-8 rounded-t-xl">
+            <h2 id="detalle-titulo" class="text-3xl font-bold text-card">Cargando...</h2>
+            <p id="detalle-descripcion" class="text-ring/90 mt-3 text-base"></p>
+            <p id="detalle-fuente" class="text-sm text-ring/70 mt-3"></p>
+          </header>
 
-        // --- VARIABLES GLOBALES ---
-        let graficaActual = null;
-        let datosDetalleActual = null; // Almacenará { header, rows, analysis }
-        
-        // --- LÓGICA DE INICIALIZACIÓN ---
+          <div id="detalle-loader" class="p-8 text-center hidden">
+            <div class="spinner w-12 h-12 rounded-full border-4 border-ring mx-auto mb-4"></div>
+            <p class="text-muted">Cargando datos del indicador...</p>
+          </div>
 
-        document.addEventListener('DOMContentLoaded', () => {
-            inicializarGaleria();
-            inicializarFiltrosPrincipales();
-            document.getElementById('btn-volver').addEventListener('click', mostrarGaleria);
+          <div id="detalle-error" class="p-8 m-6 bg-red-50 border border-red-200 text-red-800 rounded-lg hidden">
+            <h3 class="font-bold text-lg mb-2">Error al Cargar los Datos</h3>
+            <p id="detalle-error-mensaje"></p>
+          </div>
+
+          <div id="detalle-contenido" class="hidden">
+            <div class="p-6 lg:p-8 bg-background border-b border-ring">
+              <h3 class="text-xl font-semibold text-acc mb-4">Explorar Datos</h3>
+              <div class="kpi mb-6" id="detalle-kpis"></div>
+              <div id="detalle-filtros-contenedor" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+              <p id="detalle-hint" class="hint mt-3 hidden">No hay datos para la combinación de filtros actual. Se restableció un filtro a “Todos”.</p>
+            </div>
+
+            <div class="p-6 lg:p-8">
+              <h3 class="text-xl font-semibold text-acc mb-4">Gráfica</h3>
+              <div class="h-[500px] w-full">
+                <canvas id="grafica-indicador"></canvas>
+              </div>
+            </div>
+
+            <div class="p-6 lg:p-8 border-t border-ring">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xl font-semibold text-acc">Tabla de Datos</h3>
+                <button id="btn-export" class="px-4 py-2 bg-cta text-card rounded-md hover:opacity-90">Exportar CSV</button>
+              </div>
+              <div id="detalle-tabla-contenedor" class="w-full overflow-x-auto border border-ring rounded-lg max-h-[600px]">
+                <table class="min-w-full divide-y divide-ring">
+                  <thead id="detalle-tabla-header" class="bg-sec sticky top-0"></thead>
+                  <tbody id="detalle-tabla-body" class="bg-card divide-y divide-ring"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ==========================
+    //       BASE DE ÍNDICE
+    // ==========================
+    const DB_INDEX = [
+      {"id":"01","nombre":"Población de 0 a 17 años","dominio":"Contexto demográfico","derecho":"No aplica","dimension":"No aplica","unidad":"Número de personas","fuente_oficial":"Población de 0 a 17 años","fuente":"Estimación de la SE-SIPINNA con base en datos del INEGI 2020","descripcion":"Mide el número de niñas, niños y adolescentes de 0 a 17 años."},
+      {"id":"02","nombre":"Población de 0 a 17 años indígena y afrodescendiente","dominio":"Contexto demográfico","derecho":"No aplica","dimension":"No aplica","unidad":"Número de personas","fuente_oficial":"Población de 0 a 17 años indígena y afrodescendiente","fuente":"Estimaciones de la SE-SIPINNA con base en datos del INEGI. CENSO 2020","descripcion":"Mide el número de niñas, niños y adolescentes de 0 a 17 años indígena y afrodescendiente."},
+      {"id":"03","nombre":"Tasa de fecundidad de niñas de 10 a 14 años","dominio":"Supervivencia","derecho":"Protección de la salud y seguridad social","dimension":"Salud sexual y reproductiva","unidad":"Tasa por cada 1,000","fuente_oficial":"Razón de fecundidad de niñas de 10 a 14 años","fuente":"Estimaciones de CONAPO e INEGI.","descripcion":"Cociente del número de nacimientos ocurridos en niñas entre 10 y 14 años... por 1 000."},
+      {"id":"04","nombre":"Número de nacimientos de madres entre 10 y 17 años","dominio":"Supervivencia","derecho":"Protección de la salud y seguridad","dimension":"Salud sexual y reproductiva","unidad":"Número de nacimientos","fuente_oficial":"Nacimientos cuyas madres tenían entre 10 y 17 años.","fuente":"Estimación de la SE-SIPINNA con base en datos de la Secretaría de Salud 2022","descripcion":"Es el número de nacimientos que ocurrieron en niñas y adolescentes que tenían entre 10 a 17 años de edad."},
+      {"id":"05","nombre":"Mortalidad materna por cada 100 mil nacidos vivos","dominio":"Desarrollo","derecho":"Vivir en condiciones de bienestar y sano desarrollo integral","dimension":"Supervivencia","unidad":"Número de muertes maternas por cada 100 mil nacidos vivos","fuente_oficial":"Razón de mortalidad materna","fuente":"Estimaciones de la Secretaría de Salud/DGIS","descripcion":"Número de defunciones de mujeres durante embarazo o 42 días posteriores."},
+      {"id":"06","nombre":"Tasa de Mortalidad en niñas y niños menores de 1 año","dominio":"Desarrollo","derecho":"A vivir en condiciones de bienestar y sano desarrollo integral","dimension":"Supervivencia","unidad":"Tasa por cada 1,000","fuente_oficial":"Tasa de Mortalidad Infantil","fuente":"Estimaciones de la Secretaría de Salud/DGIS","descripcion":"Defunciones de menores de 1 año por cada mil nacidos vivos."},
+      {"id":"07","nombre":"Tasa de mortalidad <5 por infecciones respiratorias agudas","dominio":"Desarrollo","derecho":"A vivir en condiciones de bienestar y sano desarrollo integral","dimension":"Supervivencia","unidad":"Tasa por cada 100,000","fuente_oficial":"Tasa de mortalidad por IRA <5","fuente":"SSA + CONAPO 2018-2021","descripcion":"Defunciones por IRA por cada 100,000 menores de 5 años."},
+      {"id":"08","nombre":"Tasa de mortalidad <5 por enfermedades diarreicas","dominio":"Desarrollo","derecho":"A vivir en condiciones de bienestar y sano desarrollo integral","dimension":"Supervivencia","unidad":"Tasa por cada 100 mil","fuente_oficial":"Tasa por EDA <5","fuente":"SSA + CONAPO 2018-2021","descripcion":"Defunciones por EDA por cada 100 mil menores de 5."},
+      {"id":"09","nombre":"Adolescentes 12–17 en el sistema de justicia penal","dominio":"Protección","derecho":"Seguridad jurídica y debido proceso","dimension":"Justicia para adolescentes","unidad":"Número de personas","fuente_oficial":"Población adolescente en SIJPA","fuente":"INEGI ENASJUP 2017-2020","descripcion":"Adolescentes 12–17 en el SIJPA."},
+      {"id":"10","nombre":"Usuarios 0–19 en Centros de Asistencia Social","dominio":"Protección","derecho":"Vivir en familia","dimension":"Centros de asistencia social","unidad":"Número de personas","fuente_oficial":"Usuarios 0–19 en CAS","fuente":"INEGI Censo 2020 + Intercensal","descripcion":"Personas 0–19 que reciben servicios de asistencia social."},
+      {"id":"11","nombre":"Viviendas sin hacinamiento (0–17)","dominio":"Desarrollo","derecho":"Bienestar y sano desarrollo","dimension":"Vivienda","unidad":"Porcentaje","fuente_oficial":"% sin hacinamiento en NNAs","fuente":"CONEVAL ENIGH 2016–2020","descripcion":"≤2.5 habitantes por dormitorio."},
+      {"id":"12","nombre":"Mujeres 12–17 en unión libre","dominio":"Supervivencia","derecho":"Bienestar y sano desarrollo","dimension":"Uniones","unidad":"Porcentaje","fuente_oficial":"% en unión libre 12–17","fuente":"INEGI Censo 2020","descripcion":"Viven en unión sin matrimonio civil o religioso."},
+      {"id":"13","nombre":"NNA 6–17 usuaria de internet","dominio":"Participación y acceso a la información","derecho":"Acceso a TIC","dimension":"Acceso a TIC","unidad":"Porcentaje","fuente_oficial":"% 6–17 usuaria de internet","fuente":"ENDUTIH 2018–2021","descripcion":"Accedieron a internet en los últimos 12 meses."},
+      {"id":"14","nombre":"Carencia por acceso a la alimentación (0–17)","dominio":"Desarrollo","derecho":"Bienestar y sano desarrollo","dimension":"Pobreza y bienestar","unidad":"Porcentaje","fuente_oficial":"Carencia de alimentación NNA","fuente":"CONEVAL ENIGH 2010–2020","descripcion":"Inseguridad alimentaria moderada/severa."},
+      {"id":"15","nombre":"Carencia por servicios básicos en vivienda (0–17)","dominio":"Desarrollo","derecho":"Bienestar y sano desarrollo","dimension":"Pobreza y bienestar","unidad":"Porcentaje","fuente_oficial":"Carencia de servicios básicos","fuente":"CONEVAL ENIGH 2010–2020","descripcion":"Agua, drenaje, electricidad y combustible."},
+      {"id":"16","nombre":"NNA en situación de pobreza","dominio":"Desarrollo","derecho":"Bienestar y sano desarrollo","dimension":"Pobreza y bienestar","unidad":"Porcentaje","fuente_oficial":"Pobreza NNA","fuente":"CONEVAL ENIGH 2010–2020","descripcion":"≥1 carencia social e ingreso insuficiente."},
+      {"id":"17","nombre":"Carencia por acceso a servicios de salud (0–17)","dominio":"Desarrollo","derecho":"Bienestar y sano desarrollo","dimension":"Pobreza y bienestar","unidad":"Porcentaje","fuente_oficial":"Carencia de salud NNA","fuente":"CONEVAL ENIGH 2010–2020","descripcion":"Afiliación o derecho a servicios médicos."},
+      {"id":"18","nombre":"Carencia por seguridad social (0–17)","dominio":"Desarrollo","derecho":"Bienestar y sano desarrollo","dimension":"Pobreza y bienestar","unidad":"Porcentaje","fuente_oficial":"Carencia de seguridad social","fuente":"CONEVAL ENIGH 2010–2020","descripcion":"Mecanismos de subsistencia para individuos/familias."},
+      {"id":"19","nombre":"NNA con discapacidad con afiliación a salud","dominio":"Desarrollo","derecho":"Salud","dimension":"Acceso a la salud","unidad":"Porcentaje","fuente_oficial":"NNA con discapacidad con salud","fuente":"INEGI Censo 2020","descripcion":"Mucha dificultad/no pueden en ≥1 actividad."},
+      {"id":"20","nombre":"Demanda satisfecha de MAC modernos (15–24)","dominio":"Supervivencia","derecho":"Salud y seguridad social","dimension":"Salud sexual y reproductiva","unidad":"Porcentaje","fuente_oficial":"Demanda satisfecha MAC 15–24","fuente":"CONAPO ENADID 2014–2018","descripcion":"Mujeres 15–24 activas usan MAC modernos."},
+      {"id":"21","nombre":"Eficiencia terminal por nivel educativo","dominio":"Desarrollo","derecho":"Educación","dimension":"Servicios educativos","unidad":"Porcentaje","fuente_oficial":"Eficiencia terminal","fuente":"SEP DGPPEE 2018–2021","descripcion":"Concluyen según la duración del nivel."},
+      {"id":"22","nombre":"Tasa neta de escolarización EMS","dominio":"Desarrollo","derecho":"Educación","dimension":"Acceso a la Educación","unidad":"Tasa","fuente_oficial":"TNE EMS","fuente":"SEP DGPPEE 2018–2022","descripcion":"Matriculados en edad típica / población del grupo *100."},
+      {"id":"23","nombre":"Atención en preescolar (tasa por cada 100)","dominio":"Desarrollo","derecho":"Educación","dimension":"Servicios educativos","unidad":"Tasa por 100","fuente_oficial":"Atención preescolar","fuente":"SEP DGPPEE 2018–2022","descripcion":"Alumnos en edad típica por cada 100."},
+      {"id":"24","nombre":"NNA 3–17 con discapacidad que no asiste a la escuela","dominio":"Desarrollo","derecho":"Educación","dimension":"Acceso a la educación","unidad":"Porcentaje","fuente_oficial":"No asiste (discapacidad) 3–17","fuente":"INEGI Censo 2020","descripcion":"Dificultad severa/no pueden en ≥1 actividad y no asisten."},
+      {"id":"25","nombre":"Rezago educativo (0–17)","dominio":"Desarrollo","derecho":"Bienestar y sano desarrollo","dimension":"Pobreza y bienestar","unidad":"Porcentaje","fuente_oficial":"Rezago educativo NNA","fuente":"CONEVAL ENIGH 2010–2020","descripcion":"No asiste o no concluye según edad."},
+      {"id":"26","nombre":"Abandono escolar por nivel","dominio":"Desarrollo","derecho":"Educación","dimension":"Servicios educativos","unidad":"Porcentaje","fuente_oficial":"Abandono escolar","fuente":"SEP DGPPEE 2018–2021","descripcion":"Matrícula que abandona de un ciclo a otro por cada cien."},
+      {"id":"27","nombre":"Hogares indígenas 6–17 que leen/escriben","dominio":"Desarrollo","derecho":"Educación","dimension":"Acceso a la educación","unidad":"Porcentaje","fuente_oficial":"Alfabetismo hogares indígenas 6–17","fuente":"INPI + Censo 2020","descripcion":"Definición oficial de hogar indígena."},
+      {"id":"28","nombre":"Bibliotecas/casas/centros por 100 mil NNA","dominio":"Participación y acceso a la información","derecho":"Descanso y esparcimiento","dimension":"Cultura y recreación","unidad":"Tasa por 100 mil","fuente_oficial":"Cultura por 100 mil NNA","fuente":"SIC + CONAPO 2018–2021","descripcion":"Número por entidad."},
+      {"id":"29","nombre":"Violencia total 15–17 a lo largo de la vida","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Porcentaje","fuente_oficial":"Prevalencia total 15–17","fuente":"INEGI ENDIREH 2016–2021","descripcion":"≥1 situación de violencia."},
+      {"id":"30","nombre":"NNA desaparecidos/no localizados","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Número de personas","fuente_oficial":"RNPDNO 0–17","fuente":"SE-SIPINNA + RNPDNO 2018–2022","descripcion":"Actas registradas."},
+      {"id":"31","nombre":"Suicidios 10–17","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Número de personas","fuente_oficial":"Suicidios 10–17","fuente":"INEGI 2018–2021","descripcion":"Registros oficiales."},
+      {"id":"32","nombre":"Feminicidios 0–17","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Número de personas","fuente_oficial":"Feminicidios 0–17","fuente":"SESNSP 2018–2022","descripcion":"Tipificado por razones de género."},
+      {"id":"33","nombre":"Lesiones por violencia sexual 0–17","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Número de lesiones","fuente_oficial":"Lesiones por violencia sexual 0–17","fuente":"SSA 2022","descripcion":"Cualquier acto sexual mediante coacción."},
+      {"id":"34","nombre":"Eventos 0–17 ante autoridad migratoria","dominio":"Protección","derecho":"Derechos NNA migrantes","dimension":"Migrantes y su atención","unidad":"Número de eventos","fuente_oficial":"Eventos presentados ante INM","fuente":"UPM 2018–2022","descripcion":"Ingresados en estaciones migratorias."},
+      {"id":"35","nombre":"Ocupación infantil no permitida (5–17)","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Trabajo","unidad":"% respecto a 5–17","fuente_oficial":"Tasa de ocupación no permitida","fuente":"INEGI MTI/ENTI","descripcion":"<14 años o 15–17 peligrosas."},
+      {"id":"36","nombre":"Tasa de homicidio NNA por 100 mil","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Tasa por 100 mil","fuente_oficial":"Homicidio NNA","fuente":"SESNSP + CONAPO 2018–2020","descripcion":"Víctimas 0–17 por 100 mil."},
+      {"id":"37","nombre":"Lesiones por violencia física 0–17","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Número de lesiones","fuente_oficial":"Lesiones por violencia física 0–17","fuente":"SSA – Subsistema de Lesiones 2022","descripcion":"Daño no accidental por fuerza física."},
+      {"id":"38","nombre":"Mecanismos de participación 0–17","dominio":"Participación y acceso a la información","derecho":"Participación","dimension":"Participación","unidad":"Número","fuente_oficial":"% de mecanismos de participación","fuente":"SE-SIPINNA 2018–2022","descripcion":"Espacios institucionales sostenibles."},
+      {"id":"39","nombre":"Reportes de Incidencias Delictivas (SESNSP)","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Reportes","fuente_oficial":"SESNSP","fuente":"SESNSP","descripcion":"Reportes contra menores (tipo, modalidad, sexo)."}
+    ];
+
+    // ==========================
+    //   ESTADO Y ARRANQUE
+    // ==========================
+    let graficaActual = null;
+    let datosDetalleActual = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      inicializarGaleria();
+      inicializarFiltrosPrincipales();
+      document.getElementById('btn-volver').addEventListener('click', mostrarGaleria);
+      document.getElementById('btn-export').addEventListener('click', exportarCSVActual);
+    });
+
+    function inicializarGaleria(){
+      const galeria = document.getElementById('galeria-cards');
+      galeria.innerHTML = '';
+      const setDerechos = new Set();
+      const setDominios = new Set();
+
+      DB_INDEX.forEach(indicador=>{
+        if (indicador.derecho !== "No aplica") setDerechos.add(indicador.derecho);
+        setDominios.add(indicador.dominio);
+
+        galeria.innerHTML += `
+          <div class="card bg-card rounded-xl shadow-lg p-6 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border border-ring hover:border-cta flex flex-col"
+               data-id="${indicador.id}" data-nombre="${indicador.nombre.toLowerCase()}"
+               data-dominio="${indicador.dominio}" data-derecho="${indicador.derecho}">
+            <div class="flex-grow">
+              <div class="flex items-center mb-3">
+                <span class="bg-sec/10 text-sec p-2 rounded-full mr-3">
+                  <ion-icon name="${obtenerIcono(indicador.dominio)}" class="text-xl"></ion-icon>
+                </span>
+                <span class="text-xs font-semibold text-sec uppercase tracking-wider">${indicador.dominio}</span>
+              </div>
+              <h3 class="text-lg font-bold text-ink mb-4 min-h-[4.5rem]">${indicador.nombre}</h3>
+            </div>
+            <dl class="border-t-2 border-t-cta pt-4 text-sm space-y-1 text-muted">
+              <div class="grid grid-cols-3 gap-2">
+                <dt class="font-semibold text-ink col-span-1">Derecho:</dt>
+                <dd class="text-right col-span-2">${indicador.derecho}</dd>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <dt class="font-semibold text-ink col-span-1">Dimensión:</dt>
+                <dd class="text-right col-span-2">${indicador.dimension}</dd>
+              </div>
+              <div class="grid grid-cols-3 gap-2">
+                <dt class="font-semibold text-ink col-span-1">Unidad:</dt>
+                <dd class="text-right col-span-2">${indicador.unidad}</dd>
+              </div>
+              <div class="grid grid-cols-3 gap-2 items-start">
+                <dt class="font-semibold text-ink col-span-1 pt-1">Fuente:</dt>
+                <dd class="text-right text-xs col-span-2">${indicador.fuente}</dd>
+              </div>
+            </dl>
+          </div>`;
+      });
+
+      // llenar selects
+      const filtroDerecho = document.getElementById('filtro-derecho');
+      [...setDerechos].sort().forEach(d=>filtroDerecho.innerHTML += `<option value="${d}">${d}</option>`);
+      const filtroDominio = document.getElementById('filtro-dominio');
+      [...setDominios].sort().forEach(d=>filtroDominio.innerHTML += `<option value="${d}">${d}</option>`);
+
+      galeria.querySelectorAll('.card').forEach(card=>{
+        card.addEventListener('click', ()=> mostrarDetalle(card.dataset.id));
+      });
+    }
+
+    function inicializarFiltrosPrincipales(){
+      document.getElementById('filtro-busqueda').addEventListener('input', filtrarCards);
+      document.getElementById('filtro-dominio').addEventListener('change', filtrarCards);
+      document.getElementById('filtro-derecho').addEventListener('change', filtrarCards);
+    }
+
+    function filtrarCards(){
+      const busqueda = document.getElementById('filtro-busqueda').value.toLowerCase();
+      const dominio = document.getElementById('filtro-dominio').value;
+      const derecho = document.getElementById('filtro-derecho').value;
+      document.getElementById('galeria-cards').querySelectorAll('.card').forEach(card=>{
+        const okBusqueda = card.dataset.nombre.includes(busqueda);
+        const okDominio  = (dominio === 'todos') || (card.dataset.dominio === dominio);
+        const okDerecho  = (derecho === 'todos') || (card.dataset.derecho === derecho);
+        card.style.display = (okBusqueda && okDominio && okDerecho) ? 'flex' : 'none';
+      });
+    }
+
+    function obtenerIcono(dominio){
+      const m = {
+        'Contexto demográfico':'people-outline',
+        'Supervivencia':'heart-outline',
+        'Desarrollo':'school-outline',
+        'Protección':'shield-checkmark-outline',
+        'Participación y acceso a la información':'wifi-outline'
+      };
+      return m[dominio] || 'ellipse-outline';
+    }
+
+    // ==========================
+    //         DETALLE
+    // ==========================
+    function mostrarDetalle(id){
+      const indicador = DB_INDEX.find(x=>x.id===id);
+      document.getElementById('detalle-titulo').textContent = indicador.nombre;
+      document.getElementById('detalle-descripcion').textContent = indicador.descripcion;
+      document.getElementById('detalle-fuente').textContent = `Fuente: ${indicador.fuente}`;
+
+      document.getElementById('detalle-filtros-contenedor').innerHTML = '';
+      document.getElementById('detalle-kpis').innerHTML = '';
+      document.getElementById('detalle-hint').classList.add('hidden');
+      document.getElementById('detalle-contenido').classList.add('hidden');
+      document.getElementById('detalle-error').classList.add('hidden');
+      document.getElementById('detalle-loader').classList.remove('hidden');
+
+      if (graficaActual) graficaActual.destroy();
+      datosDetalleActual = { id };
+
+      document.getElementById('vista-principal').classList.remove('activa');
+      document.getElementById('vista-detalle').classList.add('activa');
+      window.scrollTo(0,0);
+
+      cargarDatosCSV(id);
+    }
+
+    function mostrarGaleria(){
+      document.getElementById('vista-detalle').classList.remove('activa');
+      document.getElementById('vista-principal').classList.add('activa');
+      if (graficaActual) graficaActual.destroy();
+      datosDetalleActual = null;
+    }
+
+    // ==========================
+    //  CARGA CSV (detección robusta)
+    // ==========================
+    async function cargarDatosCSV(id){
+      const nombreArchivo = `${id}.csv`;
+      try{
+        const response = await fetch(`archivos/${nombreArchivo}`);
+        if(!response.ok){
+          throw new Error(
+            `No se pudo encontrar el archivo '<b>${nombreArchivo}</b>' en <b>archivos/</b>.<br>`+
+            `Verifica el nombre y que sirves la carpeta (p.ej. <code>python -m http.server</code>).`
+          );
+        }
+        const csvTexto = (await response.text()).replace(/^\uFEFF/, ''); // quita BOM
+
+        let parsed = Papa.parse(csvTexto, {
+          delimiter: '', // autodetect
+          skipEmptyLines: 'greedy',
+          dynamicTyping: false,
+          header: false,
+          quotes: true
         });
-
-        function inicializarGaleria() {
-            const galeria = document.getElementById('galeria-cards');
-            const setDerechos = new Set();
-            const setDominios = new Set();
-            galeria.innerHTML = ''; 
-
-            DB_INDEX.forEach(indicador => {
-                if (indicador.derecho !== "No aplica") setDerechos.add(indicador.derecho);
-                setDominios.add(indicador.dominio);
-
-                const cardHTML = `
-                    <div class="card bg-card rounded-xl shadow-lg p-6 cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 border border-ring hover:border-cta flex flex-col" 
-                         data-id="${indicador.id}" 
-                         data-nombre="${indicador.nombre.toLowerCase()}" 
-                         data-dominio="${indicador.dominio}" 
-                         data-derecho="${indicador.derecho}">
-                        
-                        <div class="flex-grow">
-                            <div class="flex items-center mb-3">
-                                <span class="bg-sec/10 text-sec p-2 rounded-full mr-3">
-                                    <ion-icon name="${obtenerIcono(indicador.dominio)}" class="text-xl"></ion-icon>
-                                </span>
-                                <span class="text-xs font-semibold text-sec uppercase tracking-wider">${indicador.dominio}</span>
-                            </div>
-                            
-                            <h3 class="text-lg font-bold text-ink mb-4 min-h-[4.5rem]">${indicador.nombre}</h3>
-                        </div>
-                        
-                        <dl class="border-t-2 border-t-cta pt-4 text-sm space-y-2 text-muted">
-                            <div class="flex justify-between"><dt class="font-semibold text-ink">Derecho:</dt><dd class="text-right">${indicador.derecho}</dd></div>
-                            <div class="flex justify-between"><dt class="font-semibold text-ink">Dimensión:</dt><dd class="text-right">${indicador.dimension}</dd></div>
-                            <div class="flex justify-between"><dt class="font-semibold text-ink">Unidad:</dt><dd class="text-right">${indicador.unidad}</dd></div>
-                            <div class="flex justify-between items-start"><dt class="font-semibold text-ink pt-1">Fuente:</dt><dd class="text-right text-xs">${indicador.fuente}</dd></div>
-                        </dl>
-                    </div>
-                `;
-                galeria.innerHTML += cardHTML;
-            });
-
-            // Llenar filtros
-            const filtroDerecho = document.getElementById('filtro-derecho');
-            [...setDerechos].sort().forEach(d => filtroDerecho.innerHTML += `<option value="${d}">${d}</option>`);
-            
-            const filtroDominio = document.getElementById('filtro-dominio');
-            [...setDominios].sort().forEach(d => filtroDominio.innerHTML += `<option value="${d}">${d}</option>`);
-
-
-            galeria.querySelectorAll('.card').forEach(card => {
-                card.addEventListener('click', () => mostrarDetalle(card.dataset.id));
-            });
+        if(parsed.errors && parsed.errors.length>0){
+          const delimiter = detectarDelimitador(csvTexto);
+          parsed = Papa.parse(csvTexto, {
+            delimiter,
+            skipEmptyLines: 'greedy',
+            dynamicTyping: false,
+            header: false,
+            quotes: true
+          });
         }
 
-        function inicializarFiltrosPrincipales() {
-            document.getElementById('filtro-busqueda').addEventListener('input', filtrarCards);
-            document.getElementById('filtro-dominio').addEventListener('change', filtrarCards);
-            document.getElementById('filtro-derecho').addEventListener('change', filtrarCards);
+        const crudo = parsed.data
+          .map(r => r.map(c => (typeof c === 'string' ? c.trim() : c)))
+          .filter(r => r.some(c => c !== '' && c !== null && typeof c !== 'undefined'));
+
+        const datos = construirEstructuraDesdeCrudo(crudo, id);
+        if(!datos || !datos.rows?.length){
+          throw new Error("El CSV está vacío o no se pudo interpretar su estructura.");
         }
 
-        function filtrarCards() {
-            const busqueda = document.getElementById('filtro-busqueda').value.toLowerCase();
-            const dominio = document.getElementById('filtro-dominio').value;
-            const derecho = document.getElementById('filtro-derecho').value;
+        procesarYConstruirFiltros(datos);
+        document.getElementById('detalle-loader').classList.add('hidden');
+        document.getElementById('detalle-contenido').classList.remove('hidden');
 
-            document.getElementById('galeria-cards').querySelectorAll('.card').forEach(card => {
-                const matchBusqueda = card.dataset.nombre.includes(busqueda);
-                const matchDominio = (dominio === 'todos') || (card.dataset.dominio === dominio);
-                const matchDerecho = (derecho === 'todos') || (card.dataset.derecho === derecho);
-                card.style.display = (matchBusqueda && matchDominio && matchDerecho) ? 'flex' : 'none';
-            });
+      }catch(err){
+        console.error('Error al cargar datos:', err);
+        const box = document.getElementById('detalle-error');
+        document.getElementById('detalle-error-mensaje').innerHTML = err.message;
+        box.classList.remove('hidden');
+        document.getElementById('detalle-loader').classList.add('hidden');
+      }
+    }
+
+    function detectarDelimitador(texto){
+      const sample = texto.split('\n').slice(0,10).join('\n');
+      const counts = {
+        ',': (sample.match(/,/g)||[]).length,
+        ';': (sample.match(/;/g)||[]).length,
+        '\t': (sample.match(/\t/g)||[]).length
+      };
+      let delim = ',';
+      let max = counts[','];
+      if(counts[';']>max){delim=';';max=counts[';']}
+      if(counts['\t']>max){delim='\t'}
+      return delim;
+    }
+
+    // ==========================
+    //  HEADER + LIMPIEZA + DESPIVOTADO
+    // ==========================
+    function construirEstructuraDesdeCrudo(filas, id){
+      if(!filas.length) return null;
+
+      // 1) Encontrar fila de encabezado "ancha" y consistente
+      let headerIdx = 0;
+      for(let i=0;i<Math.min(20, filas.length);i++){
+        const row = filas[i];
+        const filled = row.filter(x=>x!=='' && x!==null && typeof x!=='undefined');
+        if(row.length>=3 && filled.length/row.length >= 0.6){
+          headerIdx = i; break;
         }
-        
-        function obtenerIcono(dominio) {
-            const iconos = {
-                'Contexto demográfico': 'people-outline', 'Supervivencia': 'heart-outline',
-                'Desarrollo': 'school-outline', 'Protección': 'shield-checkmark-outline',
-                'Participación y acceso a la información': 'wifi-outline'
-            };
-            return iconos[dominio] || 'ellipse-outline';
+      }
+
+      let header = filas[headerIdx].map(normalizarHeader);
+      let rows = filas.slice(headerIdx+1);
+
+      // 2) Normalizar longitud
+      rows = rows.map(r=>{
+        if(r.length<header.length) return [...r, ...Array(header.length - r.length).fill('')];
+        if(r.length>header.length)  return r.slice(0, header.length);
+        return r;
+      });
+
+      // 3) Eliminar columnas Unnamed/ vacías del header
+      const keepIdx = header.map((h,i)=>({h, i})).filter(obj=> obj.h && !/^Unnamed/i.test(obj.h));
+      header = keepIdx.map(x=>x.h);
+      rows = rows.map(r=> keepIdx.map(x=> r[x.i] ));
+
+      // 4) Unificar alias comunes
+      header = header.map(unificarAlias);
+
+      // 5) Detectar tabla ancha y despivotar si aplica
+      const esAncho = detectarTablaAncha(header, rows);
+      if(esAncho){
+        const {nuevoHeader, nuevasFilas} = despivotar(header, rows);
+        header = nuevoHeader.map(unificarAlias);
+        rows  = nuevasFilas;
+      }else{
+        // Rellenar etiqueta en col 0 si hay subtítulos agrupados
+        let last = '';
+        rows.forEach(r=>{ if(!r[0] || r[0]===''){ r[0] = last; } else { last = r[0]; } });
+      }
+
+      // 6) Quitar filas totalmente vacías tras limpieza
+      rows = rows.filter(r => r.some(v => (v!=='' && v!==null && typeof v!=='undefined')));
+
+      return { header, rows };
+    }
+
+    function normalizarHeader(h){
+      return (h||'').toString().replace(/\\"/g,'').trim().replace(/\s+/g,' ');
+    }
+
+    function unificarAlias(h){
+      const s = h.replace(/_/g,' ').replace(/\s+/g,' ').trim();
+      const lower = s.toLowerCase();
+      const map = {
+        'nombre geografico':'Nombre Geográfico',
+        'nombre geográfico':'Nombre Geográfico',
+        'nombre geografica':'Nombre Geográfica',
+        'nombre geográfica':'Nombre Geográfica',
+        'clave geografica':'Clave Geográfica',
+        'clave geográfica':'Clave Geográfica',
+        'clave geoestadistica':'Clave geoestadística',
+        'clave geoestadística':'Clave geoestadística',
+        'anio':'Año',
+        'año':'Año',
+        'hombre':'Hombres',
+        'mujer':'Mujeres'
+      };
+      if(map[lower]) return map[lower];
+      return s
+        .split(' ')
+        .map(w => w.length<=3 ? w.toUpperCase() : w.charAt(0).toUpperCase()+w.slice(1))
+        .join(' ');
+    }
+
+    function detectarTablaAncha(header, rows){
+      if(header.length <= 3) return false; // ya es “larga”
+      let colsNumericas = 0;
+      for(let i=1;i<header.length;i++){
+        const ratioNum = ratioNumericoCol(rows, i);
+        if(ratioNum >= 0.6) colsNumericas++;
+      }
+      const etiquetaEsTexto = ratioNumericoCol(rows, 0) <= 0.3; // col 0 principalmente texto
+      return etiquetaEsTexto && colsNumericas >= Math.max(2, Math.floor((header.length-1)*0.5));
+    }
+
+    function ratioNumericoCol(rows, i){
+      let num=0, tot=0;
+      for(const r of rows){
+        if(i>=r.length) continue;
+        const v = (r[i]||'').toString().trim();
+        if(v==='') continue;
+        tot++;
+        if(esNumero(v)) num++;
+      }
+      return tot===0 ? 0 : (num/tot);
+    }
+
+    function esNumero(v){
+      if(v==='-' || v.toLowerCase()==='na') return true;
+      const clean = v.replace(/\s/g,'').replace(/%/g,'');
+      if(/^[\d\.,\-]+$/.test(clean)){
+        const lastComma = clean.lastIndexOf(',');
+        const lastDot   = clean.lastIndexOf('.');
+        let norm = clean;
+        if(lastComma>lastDot){ // coma decimal
+          norm = clean.replace(/\./g,'').replace(',','.');
+        }else{ // punto decimal
+          norm = clean.replace(/,/g,'');
         }
+        return !isNaN(parseFloat(norm));
+      }
+      return !isNaN(parseFloat(clean));
+    }
 
-        // --- Lógica de la VISTA DE DETALLE (Gráfica y Tabla) ---
+    function toNumber(v){
+      if(v===null || typeof v==='undefined') return 0;
+      const s = v.toString().trim();
+      if(s==='' || s==='-' || s.toLowerCase()==='na') return 0;
+      const lastComma = s.lastIndexOf(',');
+      const lastDot   = s.lastIndexOf('.');
+      let norm = s.replace(/\s/g,'').replace(/%/g,'');
+      if(lastComma>lastDot){
+        norm = norm.replace(/\./g,'').replace(',','.');
+      }else{
+        norm = norm.replace(/,/g,'');
+      }
+      const n = parseFloat(norm);
+      return isNaN(n) ? 0 : n;
+    }
 
-        function mostrarDetalle(id) {
-            const indicador = DB_INDEX.find(item => item.id === id);
-            
-            document.getElementById('detalle-titulo').textContent = indicador.nombre;
-            document.getElementById('detalle-descripcion').textContent = indicador.descripcion;
-            document.getElementById('detalle-fuente').textContent = `Fuente: ${indicador.fuente}`;
+    function despivotar(header, rows){
+      const labelCol = 0;
+      const series = header.slice(1);
+      const nuevoHeader = [header[labelCol] || 'Etiqueta', 'Serie', 'Valor'];
+      const nuevasFilas = [];
 
-            document.getElementById('detalle-filtros-contenedor').innerHTML = '';
-            document.getElementById('detalle-contenido').classList.add('hidden');
-            document.getElementById('detalle-error').classList.add('hidden');
-            document.getElementById('detalle-loader').classList.remove('hidden');
-            
-            if (graficaActual) graficaActual.destroy();
-
-            document.getElementById('vista-principal').classList.remove('activa');
-            document.getElementById('vista-detalle').classList.add('activa');
-            window.scrollTo(0, 0);
-
-            cargarDatosCSV(id);
+      rows.forEach(r=>{
+        const etiqueta = r[labelCol];
+        for(let i=1;i<header.length;i++){
+          const serie = series[i-1];
+          const valor = r[i];
+          if(serie!=='' && (valor!=='' && typeof valor!=='undefined')){
+            nuevasFilas.push([etiqueta, serie, valor]);
+          }
         }
+      });
 
-        function mostrarGaleria() {
-            document.getElementById('vista-detalle').classList.remove('activa');
-            document.getElementById('vista-principal').classList.add('activa');
-            if (graficaActual) graficaActual.destroy();
-            datosDetalleActual = null;
+      return {nuevoHeader, nuevasFilas};
+    }
+
+    // ==========================
+    //   FILTROS + KPIs + GRÁFICA + TABLA
+    // ==========================
+    function procesarYConstruirFiltros(datos){
+      let {header, rows} = datos;
+      const analysis = {labelIndex:-1, metricIndices:[], categoryIndices:[]};
+
+      // Elegir la columna etiqueta priorizando algunos nombres
+      const prefer = ['Subtipo de delito','Nombre Geográfico','Nombre Geográfica','Nombre','Desagregación','Ciclo escolar','Año','Etiqueta'];
+      for(const name of prefer){
+        const idx = header.findIndex(h=>h.trim().toLowerCase()===name.toLowerCase());
+        if(idx!==-1){analysis.labelIndex=idx;break;}
+      }
+      if(analysis.labelIndex===-1){
+        analysis.labelIndex = header.findIndex((h,i)=> ratioNumericoCol(rows,i) <= 0.3 );
+        if(analysis.labelIndex===-1) analysis.labelIndex = 0;
+      }
+
+      // Clasificación de columnas
+      header.forEach((h,i)=>{
+        if(i===analysis.labelIndex) return;
+        const isNum = ratioNumericoCol(rows, i) >= 0.6;
+        if(isNum){
+          analysis.metricIndices.push({label:h.trim()||`Métrica ${i}`, index:i});
+        }else{
+          const uniq = [...new Set(rows.map(r=>r[i]))].filter(x=>x!=='' && x!==null && typeof x!=='undefined');
+          if(uniq.length>1 && uniq.length<=40){
+            analysis.categoryIndices.push({label:h.trim()||`Categoría ${i}`, index:i, options:uniq.sort()});
+          }
         }
+      });
 
-        async function cargarDatosCSV(id) {
-            const nombreArchivo = (id === '39') ? '39.csv' : `${id.padStart(2, '0')}.csv`;
-            
-            try {
-                const response = await fetch(`archivos/${nombreArchivo}`);
-                if (!response.ok) {
-                    throw new Error(`No se pudo encontrar el archivo '${nombreArchivo}' en la carpeta 'archivos/'.<br><br><b>Causa probable:</b> No estás ejecutando esto desde un servidor local. Abre una terminal en esta carpeta y ejecuta '<code>python -m http.server</code>', luego visita '<code>http://localhost:8000/dasboard_spinna.html</code>' en tu navegador.`);
-                }
-                const csvTexto = await response.text();
-                
-                const datos = parsearCSV(csvTexto);
-                if (!datos || !datos.rows.length) {
-                    throw new Error("El archivo CSV está vacío o tiene un formato no reconocido.");
-                }
+      // Fallback a conteo si no hay métricas
+      if(analysis.metricIndices.length===0){
+        const conteos = {};
+        rows.forEach(r=>{
+          const v = r[analysis.labelIndex] || 'N/A';
+          conteos[v] = (conteos[v]||0)+1;
+        });
+        header = [header[analysis.labelIndex]||'Etiqueta','Conteo'];
+        rows = Object.entries(conteos).map(([k,v])=>[k,String(v)]);
+        analysis.labelIndex=0;
+        analysis.metricIndices=[{label:'Conteo', index:1}];
+        analysis.categoryIndices=[];
+      }
 
-                procesarYConstruirFiltros(datos);
+      datosDetalleActual = {...datosDetalleActual, header, rows, analysis};
 
-                document.getElementById('detalle-loader').classList.add('hidden');
-                document.getElementById('detalle-contenido').classList.remove('hidden');
+      // KPIs rápidos (min, max, total de la primera métrica)
+      const mIdx = analysis.metricIndices[0].index;
+      const valores = rows.map(r=>toNumber(r[mIdx]));
+      const total = valores.reduce((a,b)=>a+b,0);
+      const max   = Math.max(...valores);
+      const min   = Math.min(...valores);
+      const kpiBox = document.getElementById('detalle-kpis');
+      kpiBox.innerHTML = `
+        <div class="p-4 bg-card rounded-lg border border-ring"><div class="text-xs text-muted">Total</div><div class="text-2xl font-bold">${formato(total)}</div></div>
+        <div class="p-4 bg-card rounded-lg border border-ring"><div class="text-xs text-muted">Máximo</div><div class="text-2xl font-bold">${formato(max)}</div></div>
+        <div class="p-4 bg-card rounded-lg border border-ring"><div class="text-xs text-muted">Mínimo</div><div class="text-2xl font-bold">${formato(min)}</div></div>
+        <div class="p-4 bg-card rounded-lg border border-ring"><div class="text-xs text-muted">Registros</div><div class="text-2xl font-bold">${rows.length}</div></div>`;
 
-            } catch (error) {
-                console.error("Error al cargar datos:", error);
-                const errorBox = document.getElementById('detalle-error');
-                const errorMsg = document.getElementById('detalle-error-mensaje');
-                errorMsg.innerHTML = error.message; 
-                errorBox.classList.remove('hidden');
-                document.getElementById('detalle-loader').classList.add('hidden');
-            }
+      // Controles de filtros
+      const cont = document.getElementById('detalle-filtros-contenedor');
+      let html='';
+
+      // Selector de Métrica (si hay varias)
+      if(analysis.metricIndices.length>1){
+        html += `<div>
+          <label for="filtro-metrica" class="block text-sm font-medium text-muted mb-1">Métrica</label>
+          <select id="filtro-metrica" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+            ${analysis.metricIndices.map(m=>`<option value="${m.index}">${m.label}</option>`).join('')}
+          </select>
+        </div>`;
+      }
+
+      // Selectores de categorías (si existen)
+      analysis.categoryIndices.forEach(cat=>{
+        html += `<div>
+          <label for="filtro-cat-${cat.index}" class="block text-sm font-medium text-muted mb-1">${cat.label}</label>
+          <select id="filtro-cat-${cat.index}" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+            <option value="todos">Todos</option>
+            ${cat.options.map(o=>`<option value="${o}">${o}</option>`).join('')}
+          </select>
+        </div>`;
+      });
+
+      if(html===''){
+        cont.innerHTML = `<div class="md:col-span-3 text-muted text-sm">Este indicador no tiene filtros adicionales disponibles.</div>`;
+      }else{
+        cont.innerHTML = html;
+        cont.querySelectorAll('select').forEach(sel=> sel.addEventListener('change', onFiltroChange));
+        // Inicial: aplicar cascada para sincronizar opciones
+        actualizarOpcionesCascada();
+      }
+
+      actualizarGraficaYTabla();
+    }
+
+    function formato(n){
+      if(typeof n !== 'number' || !isFinite(n)) return 'N/A';
+      return new Intl.NumberFormat('es-MX').format(n);
+    }
+
+    // --- Cascada: actualizar opciones en cada filtro según otros filtros ---
+    function onFiltroChange(e){
+      actualizarOpcionesCascada(e && e.target ? e.target.id : null);
+      actualizarGraficaYTabla();
+    }
+
+    function obtenerEstadoFiltros(){
+      const {analysis} = datosDetalleActual;
+      const estado = {};
+      analysis.categoryIndices.forEach(cat=>{
+        const el = document.getElementById(`filtro-cat-${cat.index}`);
+        estado[cat.index] = el ? el.value : 'todos';
+      });
+      return estado;
+    }
+
+    function filtrarConEstado(rows, estado){
+      const indices = Object.keys(estado).map(k=>parseInt(k));
+      return rows.filter(r => indices.every(idx => estado[idx]==='todos' || r[idx]===estado[idx]));
+    }
+
+    function actualizarOpcionesCascada(ultimoId){
+      if(!datosDetalleActual) return;
+      const {header, rows, analysis} = datosDetalleActual;
+      const estado = obtenerEstadoFiltros();
+
+      let huboReset = false;
+
+      analysis.categoryIndices.forEach(cat=>{
+        const selId = `filtro-cat-${cat.index}`;
+        const el = document.getElementById(selId);
+        if(!el) return;
+
+        // Construir estado temporal sin este filtro para calcular opciones válidas
+        const estadoSinEste = {...estado};
+        delete estadoSinEste[cat.index];
+        const candidatos = filtrarConEstado(rows, estadoSinEste).map(r=>r[cat.index]);
+        const opcionesValidas = Array.from(new Set(candidatos.filter(x=>x!=='' && x!==null && typeof x!=='undefined'))).sort();
+
+        // Reconstruir opciones del select
+        const valorActual = el.value;
+        el.innerHTML = `<option value="todos">Todos</option>` + opcionesValidas.map(o=>`<option value="${o}">${o}</option>`).join('');
+
+        // Mantener selección si sigue siendo válida; de lo contrario, resetear a 'todos'
+        if(valorActual && opcionesValidas.includes(valorActual)){
+          el.value = valorActual;
+        }else{
+          el.value = 'todos';
+          if(ultimoId === selId) huboReset = true;
         }
+      });
 
-        function parsearCSV(texto) {
-            const lineas = texto.replace(/\r/g, "").split('\n').filter(Boolean);
-            let indiceHeader = -1;
-            const palabrasClaveHeader = ['Clave_Geográfica', 'Clave geoestadística', 'Año', 'Clave_Ent'];
-            
-            for (let i = 0; i < lineas.length; i++) {
-                if (palabrasClaveHeader.some(clave => lineas[i].includes(clave))) {
-                    indiceHeader = i;
-                    break;
-                }
-            }
+      // Si el último cambio dejó sin datos y se reseteó, mostrar hint
+      const hint = document.getElementById('detalle-hint');
+      if(huboReset){
+        hint.classList.remove('hidden');
+      }else{
+        hint.classList.add('hidden');
+      }
+    }
 
-            if (indiceHeader === -1) { 
-                for(let i = 0; i < lineas.length; i++){
-                    if(lineas[i].split(',').length > 2) {
-                        indiceHeader = i;
-                        break;
-                    }
-                }
-            }
-            if(indiceHeader === -1) return null; 
+    function actualizarGraficaYTabla(){
+      if(!datosDetalleActual) return;
 
-            const header = lineas[indiceHeader].split(',').map(h => h.trim().replace(/"/g, ''));
-            const filasCrudas = lineas.slice(indiceHeader + 1);
+      const {header, rows, analysis} = datosDetalleActual;
+      const {labelIndex, categoryIndices} = analysis;
 
-            const filas = filasCrudas.map(fila => {
-                const celdas = [];
-                let enComillas = false;
-                let celdaActual = '';
-                for (let i = 0; i < fila.length; i++) {
-                    const char = fila[i];
-                    if (char === '"') enComillas = !enComillas;
-                    else if (char === ',' && !enComillas) {
-                        celdas.push(celdaActual.trim());
-                        celdaActual = '';
-                    } else celdaActual += char;
-                }
-                celdas.push(celdaActual.trim());
-                return celdas;
-            }).filter(fila => fila.length >= header.length && fila.some(cell => cell));
+      // Métrica seleccionada
+      let metricaIndex = analysis.metricIndices[0].index;
+      const metricaEl = document.getElementById('filtro-metrica');
+      if(metricaEl) metricaIndex = parseInt(metricaEl.value);
+      const metricaLabel = header[metricaIndex] || 'Valor';
 
-            return { header, rows: filas };
+      // Filtros de categoría (estado actual)
+      const estado = obtenerEstadoFiltros();
+      let datosFiltrados = filtrarConEstado(rows, estado);
+
+      // Si no hay datos tras filtros, relajar el último filtro cambiado (si hint visible ya lo hizo)
+      if(datosFiltrados.length === 0){
+        // resetear todos a 'todos'
+        categoryIndices.forEach(cat=>{
+          const el = document.getElementById(`filtro-cat-${cat.index}`);
+          if(el) el.value = 'todos';
+        });
+        datosFiltrados = rows.slice();
+        document.getElementById('detalle-hint').classList.remove('hidden');
+      }else{
+        document.getElementById('detalle-hint').classList.add('hidden');
+      }
+
+      // Agregación por etiqueta
+      const agreg = new Map();
+      datosFiltrados.forEach(r=>{
+        const label = r[labelIndex];
+        const val = toNumber(r[metricaIndex]);
+        agreg.set(label, (agreg.get(label)||0)+val);
+      });
+
+      let datos = Array.from(agreg, ([label,value])=>({label,value}));
+
+      // Orden (si parece serie temporal, aún conservamos barras pero ordenamos por etiqueta)
+      const lbl = (header[labelIndex]||'').toLowerCase();
+      const esSerie = /\b(añ|anio|año|ciclo)\b/.test(lbl);
+      if(esSerie){ datos.sort((a,b)=> a.label.toString().localeCompare(b.label.toString())); }
+      else{ datos.sort((a,b)=> b.value - a.value); }
+
+      const top = (esSerie || datos.length<=20) ? datos : datos.slice(0,20);
+      const eje = esSerie ? 'x' : 'y'; // seguimos usando barras horizontales para ranking
+
+      // Gráfica (siempre de barras)
+      const ctx = document.getElementById('grafica-indicador').getContext('2d');
+      if(graficaActual) graficaActual.destroy();
+      graficaActual = new Chart(ctx,{
+        type: 'bar',
+        data:{
+          labels: top.map(d=>d.label),
+          datasets:[{
+            label: metricaLabel,
+            data: top.map(d=>d.value),
+            backgroundColor: 'rgba(113,120,91,0.7)',
+            borderColor: 'rgba(113,120,91,1)',
+            borderWidth: 1
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          indexAxis: eje,
+          scales:{
+            [eje==='x'?'y':'x']:{beginAtZero:true},
+            [eje]:{ticks:{font:{size: top.length>15 && eje==='y' ? 10 : 12}}}
+          },
+          plugins:{ legend:{display:true} }
         }
+      });
 
-        function procesarYConstruirFiltros(datos) {
-            const { header, rows } = datos;
-            const analysis = { labelIndex: -1, metricIndices: [], categoryIndices: [] };
+      // Tabla (estructura completa sin perder columnas)
+      const thead = document.getElementById('detalle-tabla-header');
+      const tbody = document.getElementById('detalle-tabla-body');
 
-            const nombresComunesLabel = ['Nombre_Geográfico', 'Nombre  ', 'Nombre', 'Nombre_Geográfica', 'Subtipo de delito'];
-            analysis.labelIndex = header.findIndex(h => nombresComunesLabel.includes(h.trim()));
-            if (analysis.labelIndex === -1) analysis.labelIndex = 1;
+      thead.innerHTML = `<tr>${header.map(h=>`<th class="px-4 py-3 text-left text-xs font-medium text-card uppercase tracking-wider">${h}</th>`).join('')}</tr>`;
 
-            header.forEach((h, i) => {
-                if (i === analysis.labelIndex) return;
-                const isNumeric = rows.every(row => row[i] === '' || !isNaN(parseFloat(row[i])));
-                
-                if (isNumeric) {
-                    analysis.metricIndices.push({ label: h.trim(), index: i });
-                } else {
-                    const uniqueValues = [...new Set(rows.map(row => row[i]))];
-                    if (uniqueValues.length > 1 && uniqueValues.length <= 15) { 
-                        analysis.categoryIndices.push({ label: h.trim(), index: i, options: uniqueValues });
-                    }
-                }
-            });
+      tbody.innerHTML = datosFiltrados.map(fila=>`
+        <tr class="hover:bg-cta/10">
+          ${fila.slice(0, header.length).map((celda,i)=>{
+            const v = (celda===null || typeof celda==='undefined' || celda==='') ? 'N/A' : celda;
+            return `<td class="px-4 py-3 whitespace-nowrap text-sm text-ink">${v}</td>`;
+          }).join('')}
+        </tr>
+      `).join('');
+    }
 
-            if (analysis.metricIndices.length === 0) { 
-                const fallbackIndex = header.length - 1;
-                analysis.metricIndices.push({ label: header[fallbackIndex].trim(), index: fallbackIndex });
-                 const conteos = {};
-                 rows.forEach(r => { const valor = r[analysis.labelIndex]; conteos[valor] = (conteos[valor] || 0) + 1; });
-                 datos.rows = Object.entries(conteos).map(([label, valor]) => {
-                     const nuevaFila = new Array(header.length).fill('');
-                     nuevaFila[analysis.labelIndex] = label;
-                     nuevaFila[fallbackIndex] = valor;
-                     return nuevaFila;
-                 });
-            }
+    // Exportar el CSV actualmente cargado (tras filtros aplicados)
+    function exportarCSVActual(){
+      if(!datosDetalleActual) return;
+      const {header, rows} = datosDetalleActual;
 
-            datosDetalleActual = { ...datos, analysis };
+      const estado = obtenerEstadoFiltros();
+      let datosFiltrados = filtrarConEstado(rows, estado);
 
-            const filtrosContenedor = document.getElementById('detalle-filtros-contenedor');
-            filtrosContenedor.innerHTML = '';
-            
-            let filtrosHTML = `<div><label for="filtro-metrica" class="block text-sm font-medium text-muted mb-1">Métrica</label>
-                               <select id="filtro-metrica" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-                               ${analysis.metricIndices.map(m => `<option value="${m.index}">${m.label}</option>`).join('')}
-                               </select></div>`;
-            
-            analysis.categoryIndices.forEach(cat => {
-                filtrosHTML += `<div><label for="filtro-cat-${cat.index}" class="block text-sm font-medium text-muted mb-1">${cat.label}</label>
-                                <select id="filtro-cat-${cat.index}" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-                                <option value="todos">Todos</option>
-                                ${cat.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
-                                </select></div>`;
-            });
-            
-            filtrosContenedor.innerHTML = filtrosHTML;
-            filtrosContenedor.querySelectorAll('select').forEach(sel => sel.addEventListener('change', actualizarGraficaYTabla));
-            
-            actualizarGraficaYTabla();
-        }
+      const contenido = [header].concat(datosFiltrados).map(r=> r.map(c => (c==null?'':c))).map(r => r.join(',')).join('\n');
 
-        function actualizarGraficaYTabla() {
-            if (!datosDetalleActual) return;
-            
-            const { header, rows, analysis } = datosDetalleActual;
-            const { labelIndex, metricIndices, categoryIndices } = analysis;
-
-            const metricaIndex = parseInt(document.getElementById('filtro-metrica').value);
-            const metricaLabel = document.getElementById('filtro-metrica').options[document.getElementById('filtro-metrica').selectedIndex].text;
-            
-            const filtrosCategoria = categoryIndices.map(cat => ({
-                index: cat.index,
-                value: document.getElementById(`filtro-cat-${cat.index}`).value
-            }));
-
-            let datosFiltrados = rows.filter(row => {
-                return filtrosCategoria.every(filtro => filtro.value === 'todos' || row[filtro.index] === filtro.value);
-            });
-
-            let datosCombinados = datosFiltrados.map(fila => ({
-                label: fila[labelIndex],
-                value: parseFloat(fila[metricaIndex]) || 0
-            })).filter(d => d.value > 0);
-
-            datosCombinados.sort((a, b) => b.value - a.value);
-            const topDatos = datosCombinados.slice(0, 20);
-
-            const ctx = document.getElementById('grafica-indicador').getContext('2d');
-            if (graficaActual) graficaActual.destroy();
-            
-            // Gráfica se mantiene en color VERDE (pri)
-            graficaActual = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: topDatos.map(d => d.label),
-                    datasets: [{
-                        label: metricaLabel,
-                        data: topDatos.map(d => d.value),
-                        backgroundColor: 'rgba(113, 120, 91, 0.7)', // Color --pri con transparencia
-                        borderColor: 'rgba(113, 120, 91, 1)',     // Color --pri sólido
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'x', 
-                    scales: {
-                        y: { beginAtZero: true },
-                    },
-                    plugins: { legend: { display: true } }
-                }
-            });
-
-            // --- CAMBIOS EN LA TABLA ---
-            const tablaHeader = document.getElementById('detalle-tabla-header');
-            const tablaBody = document.getElementById('detalle-tabla-body');
-            
-            // CAMBIO: Texto de cabecera de tabla en BLANCO (text-card)
-            tablaHeader.innerHTML = `<tr>${header.map(h => `<th class="px-4 py-3 text-left text-xs font-medium text-card uppercase tracking-wider">${h.replace(/_/g, ' ')}</th>`).join('')}</tr>`;
-            
-            // CAMBIO: Hover de fila usa DORADO (hover:bg-cta/10)
-            tablaBody.innerHTML = datosFiltrados.map(fila => 
-                `<tr class="hover:bg-cta/10">${fila.map(celda => 
-                    `<td class="px-4 py-3 whitespace-nowrap text-sm text-ink">${celda !== null ? celda : 'N/A'}</td>`
-                ).join('')}</tr>`
-            ).join('');
-        }
-    </script>
+      const blob = new Blob([contenido], {type: 'text/csv;charset=utf-8;'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'export.csv'; a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
 </body>
 </html>

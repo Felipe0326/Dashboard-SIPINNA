@@ -1,54 +1,38 @@
-,,,,,
-,,,,,
-Nombre del indicador,Número de nacimientos de madres entre 10 y 17 años.,,,,
-Dominio,Supervivencia,,,,
-Derecho,Protección de la salud y seguridad,,,,
-Dimensión,Salud sexual y reproductiva,,,,
-Unidad de médida,Número de nacimientos ,,,,
-Indicador según fuente oficial,Nacimientos cuyas madres tenían entre 10 y 17 años.,,,,
-Fuente,Estimación de la SE-SIPINNA con base en datos de la Secretaría de Salud 2022,,,,
-,,,,,
-Descripción: Es el número de nacimientos que ocurrieron en niñas y adolescentes que tenían entre 10 a 17 años  de edad.,,,,,
-,,,,,
-Nota: La ficha del metadato no se encuentra disponible.,,,,,
-,,,,,
-Número de nacimientos de madres entre 10 y 17 años por grupo de edad en Morelos 2022 por municipio.,,,,,
-,,,,,
-Clave_Geográfica,Año,Nombre_Geográfica,10 a 14 años,15 a 17 años,
-17 001,2022,Amacuzac,2,19,
-17 002,2022,Atlatlahucan,1,15,
-17 003,2022,Axochiapan,3,40,
-17 004,2022,Ayala,13,102,
-17 005,2022,Coatlán del Río,1,5,
-17 006,2022,Cuautla,11,130,
-17 007,2022,Cuernavaca,13,179,
-17 008,2022,Emiliano Zapata,7,73,
-17 009,2022,Huitzilac,3,21,
-17 010,2022,Jantetelco,1,17,
-17 011,2022,Jiutepec,11,95,
-17 012,2022,Jojutla,2,41,
-17 013,2022,Jonacatepec de Leandro Valle,1,20,
-17 014,2022,Mazatepec,1,12,
-17 015,2022,Miacatlán,1,12,
-17 016,2022,Ocuituco,2,24,
-17 017,2022,Puente de Ixtla,9,73,
-17 018,2022,Temixco,8,101,
-17 019,2022,Tepalcingo,1,12,
-17 020,2022,Tepoztlán,0,23,
-17 021,2022,Tetecala,0,3,
-17 022,2022,Tetela del Volcán,0,36,
-17 023,2022,Tlalnepantla,1,18,
-17 024,2022,Tlaltizapán de Zapata,1,50,
-17 025,2022,Tlaquiltenango,4,28,
-17 026,2022,Tlayacapan,0,22,
-17 027,2022,Totolapan,1,17,
-17 028,2022,Xochitepec,7,71,
-17 029,2022,Yautepec,10,119,
-17 030,2022,Yecapixtla,3,75,
-17 031,2022,Zacatepec,3,21,
-17 032,2022,Zacualpan de Amilpas,0,7,
-17 033,2022,Temoac,1,13,
-17 034,2022,Coatetelco,0,3,
-17 035,2022,Xoxocotla,3,7,
-17 036,2022,Hueyapan,0,1,
-16,2022,Morelos,125,"1,505",1505
+Clave_Geográfica,Año,Nombre_Geográfica,10 a 14 años,15 a 17 años
+17 001,2022,Amacuzac,2,19
+17 002,2022,Atlatlahucan,1,15
+17 003,2022,Axochiapan,3,40
+17 004,2022,Ayala,13,102
+17 005,2022,Coatlán del Río,1,5
+17 006,2022,Cuautla,11,130
+17 007,2022,Cuernavaca,13,179
+17 008,2022,Emiliano Zapata,7,73
+17 009,2022,Huitzilac,3,21
+17 010,2022,Jantetelco,1,17
+17 011,2022,Jiutepec,11,95
+17 012,2022,Jojutla,2,41
+17 013,2022,Jonacatepec de Leandro Valle,1,20
+17 014,2022,Mazatepec,1,12
+17 015,2022,Miacatlán,1,12
+17 016,2022,Ocuituco,2,24
+17 017,2022,Puente de Ixtla,9,73
+17 018,2022,Temixco,8,101
+17 019,2022,Tepalcingo,1,12
+17 020,2022,Tepoztlán,0,23
+17 021,2022,Tetecala,0,3
+17 022,2022,Tetela del Volcán,0,36
+17 023,2022,Tlalnepantla,1,18
+17 024,2022,Tlaltizapán de Zapata,1,50
+17 025,2022,Tlaquiltenango,4,28
+17 026,2022,Tlayacapan,0,22
+17 027,2022,Totolapan,1,17
+17 028,2022,Xochitepec,7,71
+17 029,2022,Yautepec,10,119
+17 030,2022,Yecapixtla,3,75
+17 031,2022,Zacatepec,3,21
+17 032,2022,Zacualpan de Amilpas,0,7
+17 033,2022,Temoac,1,13
+17 034,2022,Coatetelco,0,3
+17 035,2022,Xoxocotla,3,7
+17 036,2022,Hueyapan,0,1
+16,2022,Morelos,125,"1,505"

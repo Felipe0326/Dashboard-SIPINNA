@@ -1,0 +1,60 @@
+,,,
+,,,
+Nombre del indicador,"Porcentaje de niños, niñas y adolescentes indígenas en hogares de 6 a 17 años que saben leer y escribir",,
+,,,
+Dominio,Desarrollo,,
+Derecho,Educación,,
+Dimensión,Acceso a la educación,,
+Unidad de medida,Porcentaje,,
+Indicador según fuente oficial,Porcentaje de la población indígena en hogares de 6 a 17 años que saben leer y escribir,,
+Fuente,Estimaciones del Instituto Nacional de los Pueblos Indígenas con base en el Sistema Nacional de,,
+,Información y Estadística sobre los Pueblos y Comunidades Indígenas y Afromexicanas y el INEGI.,,
+,Censo de Población y Vivienda 2020. ,,
+,,,
+"Descripción: El concepto de hogar indígena se ha definido como aquel donde el jefe(a), su cónyuge o alguno de los ascendientes ",,,
+"(madre o padre, madrastra o padrastro, abuelo(a), bisabuelo(a), tatarabuelo(a), suegro(a)) declararon hablar alguna lengua ",,,
+indígena.,,,
+,,,
+Nota: la ficha del metadato se puede consultar en ,,,
+http://portales.segob.gob.mx/work/models/Derechos_Humanos/Indicadores/15032022/Pct_indig_6a17_saben_leer_escribir.pdf,,,
+,,,
+"Porcentaje de niños, niñas y adolescentes indígenas de 6 a 17 años que saben leer y escribir en Morelos 2020 por municipio.",,,
+,,,
+Clave_Geográfica,Año,Nombre_Geográfico,Valor
+17013,2020,Jonacatepec de Leandro Valle,64.9
+17027,2020,Totolapan,69.2
+17003,2020,Axochiapan,69.8
+17014,2020,Mazatepec,75.0
+17004,2020,Ayala,77.1
+17019,2020,Tepalcingo,79.5
+17023,2020,Tlalnepantla,83.3
+17016,2020,Ocuituco,85.0
+17030,2020,Yecapixtla,88.6
+17017,2020,Puente de Ixtla,88.8
+17026,2020,Tlayacapan,89.3
+17029,2020,Yautepec,89.9
+17012,2020,Jojutla,90.7
+17028,2020,Xochitepec,91.0
+17020,2020,Tepoztlán,91.1
+17002,2020,Atlatlahucan,91.1
+17006,2020,Cuautla,91.5
+17009,2020,Huitzilac,91.7
+17035,2020,Xoxocotla,92.2
+17025,2020,Tlaquiltenango,92.7
+17021,2020,Tetecala,92.9
+17032,2020,Zacualpan de Amilpas,92.9
+17011,2020,Jiutepec,92.9
+17007,2020,Cuernavaca,93.0
+17024,2020,Tlaltizapán de Zapata,93.3
+17033,2020,Temoac,93.4
+17008,2020,Emiliano Zapata,93.6
+17031,2020,Zacatepec,93.8
+17018,2020,Temixco,93.8
+17036,2020,Hueyapan,96.0
+17015,2020,Miacatlán,96.2
+17010,2020,Jantetelco,96.5
+17034,2020,Coatetelco,97.4
+17022,2020,Tetela del Volcán,98.0
+17001,2020,Amacuzac,100.0
+17005,2020,Coatlán del Río,100.0
+17,2020,Morelos,89.9

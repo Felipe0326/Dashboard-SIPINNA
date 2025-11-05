@@ -1,146 +1,38 @@
-,,,,,
-,,,,,
-Nombre del indicador,"Porcentaje de niños, niñas y adolescentes de 3 a 17 años con discapacidad que no asiste a la  escuela",,,,
-,,,,,
-Dominio,Desarrollo,,,,
-Derecho,Educación,,,,
-Dimensión,Acceso a la educación,,,,
-Unidad de medida,Porcentaje,,,,
-Indicador según fuente oficial,Porcentaje de la población de 3 a 17 años con discapacidad que no asiste a la escuela,,,,
-Fuente,"Estimación de la SE-SIPINNA con base en datos del INEGI, CENSO 2020",,,,
-,,,,,
-Descripción: El INEGI identifica a las personas con discapacidad como aquellas que tienen mucha dificultad o no pueden hacer al ,,,,,
-"menos una de las actividades de la vida diaria como ver, oír, caminar, recordar o concentrarse, bañarse, vestirse o comer, hablar o",,,,,
-comunicarse. Personas con problemas o condición mental a aquellas que se encuentran en un estado alterado de salud mental (desde,,,,,
-"el nacimiento, como resultado de una enfermedad o de un trastorno mental y del comportamiento, lesión o proceso de",,,,,
-"envejecimiento), que dificulta a la persona a participar en actividades de la vida social comunitaria e interactuar con otras personas de",,,,,
-"manera adecuada para el contexto y su entorno social (por ejemplo, familia, escuela, trabajo, vecinos, etcétera). Personas con ",,,,,
-"limitaciones en la actividad a aquellas con dificultad(es) para la realización de actividades de la vida diaria como ver, oír, caminar,",,,,,
-"recordar o concentrarse, bañarse, vestirse o comer, hablar o comunicarse.",,,,,
-,,,,,
-Nota: La ficha del metadato no se encuentra disponible ,,,,,
-,,,,,
-"Porcentaje de niños, niñas y adolescentes de 3 a 17 años con discapacidad que no asiste a",,,,,
- la escuela en Morelos 2020 por municipio.,,,,,
-Clave_Geográfica,Año,Nombre_Geográfico,Total,,
-17 021,2020,Tetecala,38.9,,
-17 035,2020,Xoxocotla,32.3,,
-17 034,2020,Coatetelco,30.6,,
-17 013,2020,Jonacatepec de Leandro Valle,25.6,,
-17 033,2020,Temoac,25.1,,
-17 001,2020,Amacuzac,24.7,,
-17 014,2020,Mazatepec,23.6,,
-17 023,2020,Tlalnepantla,22.9,,
-17 012,2020,Jojutla,22.7,,
-17 004,2020,Ayala,22.6,,
-17 028,2020,Xochitepec,22.0,,
-17 003,2020,Axochiapan,21.8,,
-17 024,2020,Tlaltizapán de Zapata,21.7,,
-17 022,2020,Tetela del Volcán,21.6,,
-17 010,2020,Jantetelco,21.4,,
-17 030,2020,Yecapixtla,21.0,,
-17 029,2020,Yautepec,21.0,,
-17 017,2020,Puente de Ixtla,20.8,,
-17 026,2020,Tlayacapan,20.6,,
-17 016,2020,Ocuituco,20.2,,
-17 027,2020,Totolapan,20.1,,
-17 018,2020,Temixco,20.1,,
-17 002,2020,Atlatlahucan,19.8,,
-17 008,2020,Emiliano Zapata,19.7,,
-17 036,2020,Hueyapan,19.6,,
-17 019,2020,Tepalcingo,19.1,,
-17 031,2020,Zacatepec,19.0,,
-17 006,2020,Cuautla,18.6,,
-17 025,2020,Tlaquiltenango,18.2,,
-17 005,2020,Coatlán del Río,17.0,,
-17 011,2020,Jiutepec,16.7,,
-17 009,2020,Huitzilac,16.2,,
-17 007,2020,Cuernavaca,15.2,,
-17 020,2020,Tepoztlán,15.1,,
-17 032,2020,Zacualpan de Amilpas,14.9,,
-17 015,2020,Miacatlán,14.8,,
-17,2020,Morelos,19.3,,
-,,,,,
-,,,,,
-"Porcentaje de niños, niñas y adolescentes de 3 a 17 años con discapacidad que no asiste a la escuela en  ",,,,,
-Morelos 2020 por sexo y municipio.,,,,,
-Clave_Geográfica,Año,Nombre_Geográfico,Hombre,Mujer,
-17 021,2020,Tetecala,35.8,42.9,
-17 035,2020,Xoxocotla,35.0,29.2,
-17 034,2020,Coatetelco,35.6,24.5,
-17 013,2020,Jonacatepec de Leandro Valle,28.7,22.5,
-17 033,2020,Temoac,25.5,24.7,
-17 001,2020,Amacuzac,25.0,24.3,
-17 014,2020,Mazatepec,26.4,21.1,
-17 023,2020,Tlalnepantla,27.2,18.1,
-17 012,2020,Jojutla,25.0,19.8,
-17 004,2020,Ayala,25.0,20.0,
-17 028,2020,Xochitepec,26.8,16.3,
-17 003,2020,Axochiapan,24.5,18.1,
-17 024,2020,Tlaltizapán de Zapata,24.3,19.1,
-17 022,2020,Tetela del Volcán,24.1,18.5,
-17 010,2020,Jantetelco,26.4,15.9,
-17 030,2020,Yecapixtla,23.3,18.2,
-17 029,2020,Yautepec,22.9,19.0,
-17 017,2020,Puente de Ixtla,23.7,17.8,
-17 026,2020,Tlayacapan,24.7,15.6,
-17 016,2020,Ocuituco,22.1,17.9,
-17 027,2020,Totolapan,21.2,18.8,
-17 018,2020,Temixco,20.7,19.4,
-17 002,2020,Atlatlahucan,19.9,19.6,
-17 008,2020,Emiliano Zapata,20.1,19.2,
-17 036,2020,Hueyapan,23.0,15.6,
-17 019,2020,Tepalcingo,21.6,16.6,
-17 031,2020,Zacatepec,22.0,15.4,
-17 006,2020,Cuautla,20.5,16.3,
-17 025,2020,Tlaquiltenango,20.0,16.3,
-17 005,2020,Coatlán del Río,20.0,14.5,
-17 011,2020,Jiutepec,17.8,15.5,
-17 009,2020,Huitzilac,20.2,12.3,
-17 007,2020,Cuernavaca,16.4,13.8,
-17 020,2020,Tepoztlán,15.8,14.3,
-17 032,2020,Zacualpan de Amilpas,15.0,14.8,
-17 015,2020,Miacatlán,13.4,16.1,
-17,2020,Morelos,21.1,17.2,
-,,,,,
-,,,,,
-"Porcentaje de niños, niñas y adolescentes de 3 a 17 años con discapacidad que no asiste a la escuela en Morelos 2020 por grupo ",,,,,
-de edad y municipio.,,,,,
-Clave_Geográfica,Año,Nombre_Geográfico,De 3 a 5 años,De 6 a 11 años,De 12 a 17 años
-17 021,2020,Tetecala,61.9,17.6,45.0
-17 035,2020,Xoxocotla,52.8,13.5,42.0
-17 034,2020,Coatetelco,51.6,12.4,40.6
-17 013,2020,Jonacatepec de Leandro Valle,52.8,10.2,27.2
-17 033,2020,Temoac,45.5,15.0,29.9
-17 001,2020,Amacuzac,33.3,13.7,29.4
-17 014,2020,Mazatepec,50.0,2.5,30.8
-17 023,2020,Tlalnepantla,40.7,16.1,21.9
-17 012,2020,Jojutla,51.3,9.8,26.2
-17 004,2020,Ayala,49.2,6.7,26.4
-17 028,2020,Xochitepec,48.8,9.5,25.2
-17 003,2020,Axochiapan,44.6,7.8,25.5
-17 024,2020,Tlaltizapán de Zapata,48.1,10.4,23.0
-17 022,2020,Tetela del Volcán,45.9,5.8,30.1
-17 010,2020,Jantetelco,42.6,8.1,23.8
-17 030,2020,Yecapixtla,44.0,12.4,21.2
-17 029,2020,Yautepec,46.1,9.1,22.7
-17 017,2020,Puente de Ixtla,49.3,8.2,21.7
-17 026,2020,Tlayacapan,30.5,5.5,28.9
-17 016,2020,Ocuituco,32.8,12.5,23.7
-17 027,2020,Totolapan,44.3,5.4,25.7
-17 018,2020,Temixco,42.9,8.8,23.5
-17 002,2020,Atlatlahucan,31.5,8.9,26.4
-17 008,2020,Emiliano Zapata,46.4,6.4,21.5
-17 036,2020,Hueyapan,24.0,6.6,32.7
-17 019,2020,Tepalcingo,50.0,4.7,22.7
-17 031,2020,Zacatepec,44.3,10.7,17.7
-17 006,2020,Cuautla,41.8,7.4,20.5
-17 025,2020,Tlaquiltenango,35.4,9.9,21.4
-17 005,2020,Coatlán del Río,50.0,1.9,18.2
-17 011,2020,Jiutepec,42.8,7.4,15.9
-17 009,2020,Huitzilac,45.9,5.4,18.4
-17 007,2020,Cuernavaca,34.5,6.5,16.1
-17 020,2020,Tepoztlán,33.5,4.6,18.2
-17 032,2020,Zacualpan de Amilpas,62.5,10.1,10.5
-17 015,2020,Miacatlán,37.3,4.3,15.4
-17,2020,Morelos,42.6,7.9,21.4
+Clave_Geográfica,Año,Nombre_Geográfico,Total,Hombre,Mujer,De 3 a 5 años,De 6 a 11 años,De 12 a 17 años
+17 021,2020,Tetecala,38.9,35.8,42.9,61.9,17.6,45.0
+17 035,2020,Xoxocotla,32.3,35.0,29.2,52.8,13.5,42.0
+17 034,2020,Coatetelco,30.6,35.6,24.5,51.6,12.4,40.6
+17 013,2020,Jonacatepec de Leandro Valle,25.6,28.7,22.5,52.8,10.2,27.2
+17 033,2020,Temoac,25.1,25.5,24.7,45.5,15.0,29.9
+17 001,2020,Amacuzac,24.7,25.0,24.3,33.3,13.7,29.4
+17 014,2020,Mazatepec,23.6,26.4,21.1,50.0,2.5,30.8
+17 023,2020,Tlalnepantla,22.9,27.2,18.1,40.7,16.1,21.9
+17 012,2020,Jojutla,22.7,25.0,19.8,51.3,9.8,26.2
+17 004,2020,Ayala,22.6,25.0,20.0,49.2,6.7,26.4
+17 028,2020,Xochitepec,22.0,26.8,16.3,48.8,9.5,25.2
+17 003,2020,Axochiapan,21.8,24.5,18.1,44.6,7.8,25.5
+17 024,2020,Tlaltizapán de Zapata,21.7,24.3,19.1,48.1,10.4,23.0
+17 022,2020,Tetela del Volcán,21.6,24.1,18.5,45.9,5.8,30.1
+17 010,2020,Jantetelco,21.4,26.4,15.9,42.6,8.1,23.8
+17 030,2020,Yecapixtla,21.0,23.3,18.2,44.0,12.4,21.2
+17 029,2020,Yautepec,21.0,22.9,19.0,46.1,9.1,22.7
+17 017,2020,Puente de Ixtla,20.8,23.7,17.8,49.3,8.2,21.7
+17 026,2020,Tlayacapan,20.6,24.7,15.6,30.5,5.5,28.9
+17 016,2020,Ocuituco,20.2,22.1,17.9,32.8,12.5,23.7
+17 027,2020,Totolapan,20.1,21.2,18.8,44.3,5.4,25.7
+17 018,2020,Temixco,20.1,20.7,19.4,42.9,8.8,23.5
+17 002,2020,Atlatlahucan,19.8,19.9,19.6,31.5,8.9,26.4
+17 008,2020,Emiliano Zapata,19.7,20.1,19.2,46.4,6.4,21.5
+17 036,2020,Hueyapan,19.6,23.0,15.6,24.0,6.6,32.7
+17 019,2020,Tepalcingo,19.1,21.6,16.6,50.0,4.7,22.7
+17 031,2020,Zacatepec,19.0,22.0,15.4,44.3,10.7,17.7
+17 006,2020,Cuautla,18.6,20.5,16.3,41.8,7.4,20.5
+17 025,2020,Tlaquiltenango,18.2,20.0,16.3,35.4,9.9,21.4
+17 005,2020,Coatlán del Río,17.0,20.0,14.5,50.0,1.9,18.2
+17 011,2020,Jiutepec,16.7,17.8,15.5,42.8,7.4,15.9
+17 009,2020,Huitzilac,16.2,20.2,12.3,45.9,5.4,18.4
+17 007,2020,Cuernavaca,15.2,16.4,13.8,34.5,6.5,16.1
+17 020,2020,Tepoztlán,15.1,15.8,14.3,33.5,4.6,18.2
+17 032,2020,Zacualpan de Amilpas,14.9,15.0,14.8,62.5,10.1,10.5
+17 015,2020,Miacatlán,14.8,13.4,16.1,37.3,4.3,15.4
+17,2020,Morelos,19.3,,,42.6,7.9,21.4

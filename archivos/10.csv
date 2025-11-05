@@ -1,29 +1,6 @@
-,,,,
-,,,,
-Nombre del indicador,Población de 0 a 19 años usuarios de Centros de Asistencia Social,,,
-Dominio,Protección,,,
-Derecho,Vivir en familia,,,
-Dimensión,Centros de asistencia social,,,
-Unidad de medida,Número de personas,,,
-Indicador según fuente oficial,Población de 0 a 19 años usuarios de Centros de Asistencia Social,,,
-Fuente,Estimaciones del INEGI con base en el CENSO 2020 y en la encuesta INTERCENSAL 2015,,,
-,,,,
-Descripción: Número de personas de 0 a 19 años que recibe alojamiento y otros servicios que proporciona el ,,,,
-establecimiento de asistencia social en el momento del levantamiento.,,,,
-,,,,
-Nota: La ficha del metadato no se encuentra disponible.,,,,
-,,,,
-Población de 0 a 19 años usuarios de Centros de Asistencia Social en Morelos 2015-2020 por grupo de edad.,,,,
-Clave_Geográfica,Nombre_Geográfico,,Desagregación,
-17,Morelos,,Grupos de edad,
-Año,0 a 4 años,5 a 9 años,10 a 14 años,15 a 19 años
-2015,81,265,556,583
-2020,93,189,389,564
-,,,,Elaborado por la Dirección de Administración del Sistema de Información Nacional de la SE-SIPINNA con base en datos del INEGI.
-,,,,
-Población de 0 a 19 años usuarios de Centros de Asistencia Social en Morelos 2015-2020 por sexo.,,,,
-Clave_Geográfica,,Nombre_Geográfico,Desagregación,
-17,,Morelos,Sexo,
-Año,,kpi 10 (Hombres),kpi 10 (Mujeres),
-2015,,858,627,
-2020,,706,529,
+Clave_Geográfica,Nombre_Geográfico,,Desagregación,,Clave_Geográfica,,Nombre_Geográfico,Desagregación
+17,Morelos,,Grupos de edad,,17,,Morelos,Sexo
+Año,0 a 4 años,5 a 9 años,10 a 14 años,15 a 19 años,Año,,kpi 10 (Hombres),kpi 10 (Mujeres)
+2015,81,265,556,583,2015,,858,627
+2020,93,189,389,564,2020,,706,529
+,,,,Elaborado por la Dirección de Administración del Sistema de Información Nacional de la SE-SIPINNA con base en datos del INEGI.,,,,

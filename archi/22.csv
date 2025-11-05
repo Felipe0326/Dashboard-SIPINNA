@@ -1,0 +1,24 @@
+,,,,,
+,,,,,
+Nombre del indicador,Tasa neta de escolarización de adolescentes para nivel medio superior,,,,
+Dominio,Desarrollo,,,,
+Derecho,Educación,,,,
+Dimensión,Acceso a la Educación,,,,
+Unidad de medida,Tasa,,,,
+Indicador según fuente oficial,Tasa neta de escolarización para nivel medio superior,,,,
+Fuente,"Estimaciones de la SEP, con base en datos de la Dirección General de Planeación, Programación y  ",,,,
+,Estadística Educativa (DGPPEE) 2018-2022 ,,,,
+,,,,,
+Descripción: Es el número de alumnas (os) en el nivel medio superior al inicio del ciclo escolar del rango de edad ,,,,,
+"típico correspondiente al nivel educativo, por cada cien en el mismo grupo de edad de la población.",,,,,
+,,,,,
+Nota: la ficha del metadato se puede consultar en ,,,,,
+http://portales.segob.gob.mx/work/models/Derechos_Humanos/pdf/Tasa_neta_de_escolarizacion.pdf,,,,,
+,,,,,
+Tasa neta de escolarización de adolescentes para nivel medio superior en Morelos 2018-2022 por ciclo escolar y sexo.,,,,,
+Clave_Geográfica,,Nombre_Geográfico,,Desagregación,
+17,,Morelos,,Sexo,
+Ciclo escolar,,2018-2019,2019-2020,2020-2021,2021-2022
+Valor,,65.1,63.7,60.4,58.0
+Hombres,,62.1,59.8,56.9,53.2
+Mujeres,,68.1,67.8,64.1,63.0

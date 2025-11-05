@@ -1,39 +1,12 @@
-,,,,,
-,,,,,
-Nombre del indicador,"Eventos de niñas, niños y adolescentes de 0 a 17 años presentados ante la autoridad migratoria",,,,
-,,,,,
-Dominio,Protección,,,,
-Derecho,"Derechos de niñas, niños y adolescentes migrantes",,,,
-Dimensión,Migrantes y su atención,,,,
-Unidad de medida,Número de eventos,,,,
-Indicador según fuente oficial,Eventos de menores presentados ante la autoridad migratoria,,,,
-Fuente,Estimaciones de la SE-SIPINNA con base en datos de la Unidad de Política Migratoria 2018-2022,,,,
-,,,,,
-Nota: La información se refiere a eventos de migrantes ingresados en las estaciones migratorias del INM bajo el ,,,,,
-"procedimiento administrativo de presentación por no acreditar su situación migratoria, según lo previsto en los ",,,,,
-"artículos 99, 112 y 113 de la Ley de Migración y del artículo 222 de su Reglamento.",,,,,
-,,,,,
-"Eventos de niñas, niños y adolescentes de 0 a 17 años presentados ante la autoridad migratoria en Morelos 2018-2022 por grupo ",,,,,
-de edad.,,,,,
-Clave_Geográfica,,Nombre_Geográfico,,Desagregación,
-17,,Morelos,,Grupo de edad,
-Año,2018,2019,2020,2021,2022
-De 0 a 11 años,9,8,0,3,0
-De 12 a 17 años,15,12,0,0,2
-Total ,24,20,0,3,2
-,,,,,
-,,,,,
-"Eventos de niñas, niños y adolescentes de 0 a 17 años presentados ante la autoridad migratoria en Morelos 2018-2022 por grupo de",,,,,
-edad y condición de acompañamiento,,,,,
-Clave_Geográfica,,Nombre_Geográfico,,Desagregación,
-17,,Morelos,,"De 0 a 17 años, de 0 a 11 años, de 12 a 17 años y condición de acompañamiento",
-Año,2018,2019,2020,2021,2022
-De 0 a 17 años total,24,20,0,3,2
-De 0 a 17 años acompañados,12,18,0,3,2
-De 0 a 17 años no acompañados,12,2,0,0,0
-De 0 a 11 años total,9,8,0,3,0
-De 0 a 11 años acompañados,9,7,0,3,0
-De 0 a 11 años no acompañados,0,1,0,0,0
-De 12 a 17 años total,15,12,0,0,2
-De 12 a 17 años acompañados,3,11,0,0,2
-De 12 a 17 años no acompañados,12,1,0,0,0
+Clave_Geográfica,,Nombre_Geográfico,,Desagregación,,Clave_Geográfica,,Nombre_Geográfico,,Desagregación,
+17,,Morelos,,Grupo de edad,,17,,Morelos,,"De 0 a 17 años, de 0 a 11 años, de 12 a 17 años y condición de acompañamiento",
+Año,2018,2019,2020,2021,2022,Año,2018,2019,2020,2021,2022
+De 0 a 11 años,9,8,0,3,0,De 0 a 17 años total,24,20,0,3,2
+De 12 a 17 años,15,12,0,0,2,De 0 a 17 años acompañados,12,18,0,3,2
+Total ,24,20,0,3,2,De 0 a 17 años no acompañados,12,2,0,0,0
+,,,,,,De 0 a 11 años total,9,8,0,3,0
+,,,,,,De 0 a 11 años acompañados,9,7,0,3,0
+,,,,,,De 0 a 11 años no acompañados,0,1,0,0,0
+,,,,,,De 12 a 17 años total,15,12,0,0,2
+,,,,,,De 12 a 17 años acompañados,3,11,0,0,2
+,,,,,,De 12 a 17 años no acompañados,12,1,0,0,0

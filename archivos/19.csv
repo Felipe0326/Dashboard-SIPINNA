@@ -1,103 +1,38 @@
-,,,,,
-,,,,,
-Nombre del indicador,"Porcentaje de niñas, niños y adolescentes de 0 a 17 años con discapacidad o limitación con afiliación a servicios de salud",,,,
-,,,,,
-Dominio,Desarrollo,,,,
-Derecho,Salud,,,,
-Dimensión,Acceso a la salud,,,,
-Unidad de medida,Porcentaje,,,,
-Indicador según fuente,"Porcentaje de niñas, niños y adolescentes con discapacidad o limitación con ",,,,
-oficial,afiliación a servicios de salud,,,,
-Fuente,"Estimaciones de la SE-SIPINNA con base en datos del INEGI, CENSO 2020",,,,
-,,,,,
-Descripción: El INEGI identifica a las personas con discapacidad como aquellas que tienen mucha dificultad o no pueden hacer al,,,,,
-"menos una de las actividades de la vida diaria como ver, oír, caminar, recordar o concentrarse, bañarse, vestirse o comer, hablar o ",,,,,
-comunicarse. Personas con problemas o condición mental a aquellas que se encuentran en un estado  alterado de salud mental ,,,,,
-"(desde el nacimiento, como resultado de una enfermedad o de un trastorno mental y del comportamiento, lesión o proceso de ",,,,,
-"envejecimiento), que dificulta a la persona a participar en actividades de la vida social comunitaria e interactuar con otras personas de",,,,,
-"manera adecuada para el contexto y su entorno social (por ejemplo, familia, escuela, trabajo, vecinos, etcétera). Personas con ",,,,,
-"limitaciones en la actividad a aquellas con o dificultad(es) para la realización de actividades de la vida diaria como ver, oír, caminar, ",,,,,
-"recordar o concentrarse, bañarse, vestirse comer, hablar o comunicarse.",,,,,
-,,,,,
-Nota: La ficha del metadato no se encuentra disponible ,,,,,
-,,,,,
-"Porcentaje de niñas, niños y adolescentes de 0 a 17 años con alguna discapacidad o limitación con afiliación a servicios de salud en Morelos 2020 por municipio y sexo. ",,,,,
-,,,,,
-Clave_Geográfica,Año,Nombre_Geográfico,Total,Hombres,Mujeres
-17 002,2020,Atlatlahucan,65.6,65.9,65.3
-17 009,2020,Huitzilac,65.7,65.3,66.1
-17 035,2020,Xoxocotla,68.0,67.4,68.8
-17 020,2020,Tepoztlán,69.9,70.1,69.6
-17 007,2020,Cuernavaca,72.5,73.0,71.9
-17 011,2020,Jiutepec,73.3,73.0,73.7
-17 026,2020,Tlayacapan,73.8,76.3,70.8
-17 006,2020,Cuautla,75.1,75.2,74.9
-17 029,2020,Yautepec,75.1,74.5,75.6
-17 004,2020,Ayala,75.3,75.5,75.0
-17 018,2020,Temixco,75.9,76.3,75.4
-17 008,2020,Emiliano Zapata,76.8,75.8,78.1
-17 030,2020,Yecapixtla,77.0,74.6,79.8
-17 028,2020,Xochitepec,77.0,76.6,77.4
-17 023,2020,Tlalnepantla,78.6,73.6,84.1
-17 012,2020,Jojutla,78.7,77.2,80.6
-17 003,2020,Axochiapan,78.8,80.0,77.3
-17 036,2020,Hueyapan,78.9,75.6,82.4
-17 016,2020,Ocuituco,79.4,77.8,81.1
-17 024,2020,Tlaltizapán de Zapata,79.6,79.2,80.0
-17 032,2020,Zacualpan de Amilpas,79.8,81.2,78.2
-17 017,2020,Puente de Ixtla,80.4,79.3,81.6
-17 015,2020,Miacatlán,81.8,82.3,81.2
-17 031,2020,Zacatepec,81.8,82.2,81.4
-17 025,2020,Tlaquiltenango,82.8,81.0,84.7
-17 019,2020,Tepalcingo,83.5,82.4,84.7
-17 005,2020,Coatlán del Río,83.9,88.5,80.0
-17 001,2020,Amacuzac,84.3,86.5,81.7
-17 013,2020,Jonacatepec de Leandro Valle,85.1,85.6,84.5
-17 027,2020,Totolapan,85.2,83.3,87.3
-17 014,2020,Mazatepec,86.0,88.3,83.6
-17 022,2020,Tetela del Volcán,86.5,90.3,81.8
-17 034,2020,Coatetelco,87.2,89.8,84.1
-17 010,2020,Jantetelco,88.7,87.9,89.5
-17 021,2020,Tetecala,90.4,93.1,87.0
-17 033,2020,Temoac,91.1,92.0,89.9
-17,2020,Morelos,84.3,86.5,81.7
-,,,,,
-"Porcentaje de niñas, niños y adolescentes de 0 a 17 años con alguna discapacidad o limitación con afiliación a servicios de salud en Morelos 2020 por municipio y grupo de edad.",,,,,
-,,,,,
-Clave_Geográfica,Año,Nombre_Geográfico,De 0 a 5 años,De 6 a 11 años,De 12 a 17 años
-17 002,2020,Atlatlahucan,62.3,67.4,65.3
-17 009,2020,Huitzilac,64.0,62.5,68.8
-17 035,2020,Xoxocotla,63.5,65.9,71.0
-17 020,2020,Tepoztlán,69.5,71.0,69.1
-17 007,2020,Cuernavaca,73.9,73.0,71.3
-17 011,2020,Jiutepec,72.5,74.5,72.8
-17 026,2020,Tlayacapan,79.8,72.4,72.1
-17 006,2020,Cuautla,76.2,76.1,73.5
-17 029,2020,Yautepec,74.3,74.6,75.9
-17 004,2020,Ayala,69.7,77.1,77.1
-17 018,2020,Temixco,76.2,77.5,74.1
-17 008,2020,Emiliano Zapata,78.6,78.4,74.2
-17 030,2020,Yecapixtla,81.0,74.7,76.7
-17 028,2020,Xochitepec,76.8,81.0,73.7
-17 023,2020,Tlalnepantla,87.2,77.4,73.4
-17 012,2020,Jojutla,74.2,81.6,78.4
-17 003,2020,Axochiapan,74.5,84.0,77.1
-17 036,2020,Hueyapan,76.9,83.6,75.0
-17 016,2020,Ocuituco,81.6,73.9,83.5
-17 024,2020,Tlaltizapán de Zapata,77.1,80.9,80.1
-17 032,2020,Zacualpan de Amilpas,91.3,75.9,80.2
-17 017,2020,Puente de Ixtla,76.7,82.2,80.8
-17 015,2020,Miacatlán,82.0,82.6,80.9
-17 031,2020,Zacatepec,77.2,83.2,83.5
-17 025,2020,Tlaquiltenango,81.9,79.3,86.2
-17 019,2020,Tepalcingo,78.6,85.0,84.3
-17 005,2020,Coatlán del Río,91.9,77.8,84.4
-17 001,2020,Amacuzac,89.2,86.3,79.4
-17 013,2020,Jonacatepec de Leandro Valle,85.1,87.0,83.7
-17 027,2020,Totolapan,86.8,81.0,88.3
-17 014,2020,Mazatepec,93.1,80.0,86.5
-17 022,2020,Tetela del Volcán,83.3,85.4,89.0
-17 034,2020,Coatetelco,93.9,86.5,84.4
-17 010,2020,Jantetelco,95.6,88.3,84.6
-17 021,2020,Tetecala,96.7,88.2,87.5
-17 033,2020,Temoac,97.1,87.5,92.2
+Clave_Geográfica,Año,Nombre_Geográfico,Total,Hombres,Mujeres,Clave_Geográfica,Año,Nombre_Geográfico,De 0 a 5 años,De 6 a 11 años,De 12 a 17 años
+17 002,2020,Atlatlahucan,65.6,65.9,65.3,17 002,2020,Atlatlahucan,62.3,67.4,65.3
+17 009,2020,Huitzilac,65.7,65.3,66.1,17 009,2020,Huitzilac,64.0,62.5,68.8
+17 035,2020,Xoxocotla,68.0,67.4,68.8,17 035,2020,Xoxocotla,63.5,65.9,71.0
+17 020,2020,Tepoztlán,69.9,70.1,69.6,17 020,2020,Tepoztlán,69.5,71.0,69.1
+17 007,2020,Cuernavaca,72.5,73.0,71.9,17 007,2020,Cuernavaca,73.9,73.0,71.3
+17 011,2020,Jiutepec,73.3,73.0,73.7,17 011,2020,Jiutepec,72.5,74.5,72.8
+17 026,2020,Tlayacapan,73.8,76.3,70.8,17 026,2020,Tlayacapan,79.8,72.4,72.1
+17 006,2020,Cuautla,75.1,75.2,74.9,17 006,2020,Cuautla,76.2,76.1,73.5
+17 029,2020,Yautepec,75.1,74.5,75.6,17 029,2020,Yautepec,74.3,74.6,75.9
+17 004,2020,Ayala,75.3,75.5,75.0,17 004,2020,Ayala,69.7,77.1,77.1
+17 018,2020,Temixco,75.9,76.3,75.4,17 018,2020,Temixco,76.2,77.5,74.1
+17 008,2020,Emiliano Zapata,76.8,75.8,78.1,17 008,2020,Emiliano Zapata,78.6,78.4,74.2
+17 030,2020,Yecapixtla,77.0,74.6,79.8,17 030,2020,Yecapixtla,81.0,74.7,76.7
+17 028,2020,Xochitepec,77.0,76.6,77.4,17 028,2020,Xochitepec,76.8,81.0,73.7
+17 023,2020,Tlalnepantla,78.6,73.6,84.1,17 023,2020,Tlalnepantla,87.2,77.4,73.4
+17 012,2020,Jojutla,78.7,77.2,80.6,17 012,2020,Jojutla,74.2,81.6,78.4
+17 003,2020,Axochiapan,78.8,80.0,77.3,17 003,2020,Axochiapan,74.5,84.0,77.1
+17 036,2020,Hueyapan,78.9,75.6,82.4,17 036,2020,Hueyapan,76.9,83.6,75.0
+17 016,2020,Ocuituco,79.4,77.8,81.1,17 016,2020,Ocuituco,81.6,73.9,83.5
+17 024,2020,Tlaltizapán de Zapata,79.6,79.2,80.0,17 024,2020,Tlaltizapán de Zapata,77.1,80.9,80.1
+17 032,2020,Zacualpan de Amilpas,79.8,81.2,78.2,17 032,2020,Zacualpan de Amilpas,91.3,75.9,80.2
+17 017,2020,Puente de Ixtla,80.4,79.3,81.6,17 017,2020,Puente de Ixtla,76.7,82.2,80.8
+17 015,2020,Miacatlán,81.8,82.3,81.2,17 015,2020,Miacatlán,82.0,82.6,80.9
+17 031,2020,Zacatepec,81.8,82.2,81.4,17 031,2020,Zacatepec,77.2,83.2,83.5
+17 025,2020,Tlaquiltenango,82.8,81.0,84.7,17 025,2020,Tlaquiltenango,81.9,79.3,86.2
+17 019,2020,Tepalcingo,83.5,82.4,84.7,17 019,2020,Tepalcingo,78.6,85.0,84.3
+17 005,2020,Coatlán del Río,83.9,88.5,80.0,17 005,2020,Coatlán del Río,91.9,77.8,84.4
+17 001,2020,Amacuzac,84.3,86.5,81.7,17 001,2020,Amacuzac,89.2,86.3,79.4
+17 013,2020,Jonacatepec de Leandro Valle,85.1,85.6,84.5,17 013,2020,Jonacatepec de Leandro Valle,85.1,87.0,83.7
+17 027,2020,Totolapan,85.2,83.3,87.3,17 027,2020,Totolapan,86.8,81.0,88.3
+17 014,2020,Mazatepec,86.0,88.3,83.6,17 014,2020,Mazatepec,93.1,80.0,86.5
+17 022,2020,Tetela del Volcán,86.5,90.3,81.8,17 022,2020,Tetela del Volcán,83.3,85.4,89.0
+17 034,2020,Coatetelco,87.2,89.8,84.1,17 034,2020,Coatetelco,93.9,86.5,84.4
+17 010,2020,Jantetelco,88.7,87.9,89.5,17 010,2020,Jantetelco,95.6,88.3,84.6
+17 021,2020,Tetecala,90.4,93.1,87.0,17 021,2020,Tetecala,96.7,88.2,87.5
+17 033,2020,Temoac,91.1,92.0,89.9,17 033,2020,Temoac,97.1,87.5,92.2
+17,2020,Morelos,84.3,86.5,81.7,,,,,,
