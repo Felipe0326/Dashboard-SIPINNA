@@ -1,7 +1,13 @@
-Clave_Geográfica,Nombre_Geográfico,,Desagregación,
-17,Morelos,,"Sexo, año y población indígena",
-Año,,2016,2018,2020
-Total,,87.2,88.0,90.9
-Femenino,,87.1,87.6,90.8
-Masculino,,87.3,88.4,91.0
-Población indígena,,74.0,79.9,82.5
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,"Sexo, año y población indígena",Total,2016,87.2
+17,Morelos,"Sexo, año y población indígena",Total,2018,88.0
+17,Morelos,"Sexo, año y población indígena",Total,2020,90.9
+17,Morelos,"Sexo, año y población indígena",Femenino,2016,87.1
+17,Morelos,"Sexo, año y población indígena",Femenino,2018,87.6
+17,Morelos,"Sexo, año y población indígena",Femenino,2020,90.8
+17,Morelos,"Sexo, año y población indígena",Masculino,2016,87.3
+17,Morelos,"Sexo, año y población indígena",Masculino,2018,88.4
+17,Morelos,"Sexo, año y población indígena",Masculino,2020,91.0
+17,Morelos,"Sexo, año y población indígena","Población indígena",2016,74.0
+17,Morelos,"Sexo, año y población indígena","Población indígena",2018,79.9
+17,Morelos,"Sexo, año y población indígena","Población indígena",2020,82.5

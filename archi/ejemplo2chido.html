@@ -124,7 +124,6 @@
           </div>
 
           <div id="detalle-contenido" class="hidden">
-            <!-- (Se removió el bloque "Explorar Datos") -->
             <div class="p-6 lg:p-8 bg-background border-b border-ring">
               <div id="detalle-filtros-contenedor" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
               <p id="detalle-hint" class="hint mt-3 hidden">No hay datos para la combinación de filtros actual. Se restableció un filtro a “Todos”.</p>
@@ -200,14 +199,6 @@
       {"id":"38","nombre":"Mecanismos de participación 0–17","dominio":"Participación y acceso a la información","derecho":"Participación","dimension":"Participación","unidad":"Número","fuente_oficial":"% de mecanismos de participación","fuente":"SE-SIPINNA 2018–2022","descripcion":"Espacios institucionales sostenibles."},
       {"id":"39","nombre":"Reportes de Incidencias Delictivas (SESNSP)","dominio":"Protección","derecho":"Vida libre de violencia e integridad personal","dimension":"Violencia y maltrato","unidad":"Reportes","fuente_oficial":"SESNSP","fuente":"SESNSP","descripcion":"Reportes contra menores (tipo, modalidad, sexo)."}
     ];
-
-    // === Reglas específicas para 03, 06, 07, 08 (solo esto) ===
-    const SPECIAL = {
-      "03": { onlySerie: true, defaultSerie: "De 10 a 14 años" },
-      "06": { noFilters: true },
-      "07": { noFilters: true },
-      "08": { noFilters: true, kpiRegex: /kpi\s*8\s*-\s*(\d{4})/i } // respeta etiqueta "kpi 8-YYYY" y ordena por año
-    };
 
     // ==========================
     //   ESTADO Y ARRANQUE
@@ -351,10 +342,10 @@
             `Verifica el nombre y que sirves la carpeta (p.ej. <code>python -m http.server</code>).`
           );
         }
-        const csvTexto = (await response.text()).replace(/^\uFEFF/, ''); // quita BOM
+        const csvTexto = (await response.text()).replace(/^\uFEFF/, '');
 
         let parsed = Papa.parse(csvTexto, {
-          delimiter: '', // autodetect
+          delimiter: '',
           skipEmptyLines: 'greedy',
           dynamicTyping: false,
           header: false,
@@ -375,12 +366,26 @@
           .map(r => r.map(c => (typeof c === 'string' ? c.trim() : c)))
           .filter(r => r.some(c => c !== '' && c !== null && typeof c !== 'undefined'));
 
-        const datos = construirEstructuraDesdeCrudo(crudo, id);
+        const datos = construirEstructuraDesdeCrudo(crudo);
         if(!datos || !datos.rows?.length){
           throw new Error("El CSV está vacío o no se pudo interpretar su estructura.");
         }
 
-        procesarYConstruirFiltros(datos);
+        // <<< AQUI: RUTAS ESPECIALES PARA 03 / 06 / 07 / 08 / 09 / 10 / 11 / 13 >>>
+        const idSel = datosDetalleActual.id;
+        if (idSel === '03') {
+          renderCard3(datos);                 // Solo filtro Serie; años en X; barras Valor
+        } else if (idSel === '06' || idSel === '07' || idSel === '08') {
+          renderYearsNoFilters(datos);        // Sin filtros; años en X; barras Valor
+        } else if (idSel === '09' || idSel === '10') {
+          renderEntidadAnios(datos);          // Filtro: Entidad; años en X; barras Valor
+        } else if (idSel === '11' || idSel === '13') {
+          renderTopByYear(datos);             // Filtro: Año; barras horizontales por entidad (top N)
+        } else {
+          // Genérico (resto de cards) – NO TOCADO
+          procesarYConstruirFiltros(datos);
+        }
+
         document.getElementById('detalle-loader').classList.add('hidden');
         document.getElementById('detalle-contenido').classList.remove('hidden');
 
@@ -410,52 +415,42 @@
     // ==========================
     //  HEADER + LIMPIEZA + DESPIVOTADO
     // ==========================
-    function construirEstructuraDesdeCrudo(filas, id){
+    function construirEstructuraDesdeCrudo(filas){
       if(!filas.length) return null;
 
-      // 1) Encontrar fila de encabezado "ancha" y consistente
       let headerIdx = 0;
       for(let i=0;i<Math.min(20, filas.length);i++){
         const row = filas[i];
         const filled = row.filter(x=>x!=='' && x!==null && typeof x!=='undefined');
-        if(row.length>=3 && filled.length/row.length >= 0.6){
-          headerIdx = i; break;
-        }
+        if(row.length>=3 && filled.length/row.length >= 0.6){ headerIdx = i; break; }
       }
 
       let header = filas[headerIdx].map(normalizarHeader);
       let rows = filas.slice(headerIdx+1);
 
-      // 2) Normalizar longitud
       rows = rows.map(r=>{
         if(r.length<header.length) return [...r, ...Array(header.length - r.length).fill('')];
         if(r.length>header.length)  return r.slice(0, header.length);
         return r;
       });
 
-      // 3) Eliminar columnas Unnamed/ vacías del header
       const keepIdx = header.map((h,i)=>({h, i})).filter(obj=> obj.h && !/^Unnamed/i.test(obj.h));
       header = keepIdx.map(x=>x.h);
       rows = rows.map(r=> keepIdx.map(x=> r[x.i] ));
 
-      // 4) Unificar alias comunes
       header = header.map(unificarAlias);
 
-      // 5) Detectar tabla ancha y despivotar si aplica
       const esAncho = detectarTablaAncha(header, rows);
       if(esAncho){
         const {nuevoHeader, nuevasFilas} = despivotar(header, rows);
         header = nuevoHeader.map(unificarAlias);
         rows  = nuevasFilas;
       }else{
-        // Rellenar etiqueta en col 0 si hay subtítulos agrupados
         let last = '';
         rows.forEach(r=>{ if(!r[0] || r[0]===''){ r[0] = last; } else { last = r[0]; } });
       }
 
-      // 6) Quitar filas totalmente vacías tras limpieza
       rows = rows.filter(r => r.some(v => (v!=='' && v!==null && typeof v!=='undefined')));
-
       return { header, rows };
     }
 
@@ -488,13 +483,13 @@
     }
 
     function detectarTablaAncha(header, rows){
-      if(header.length <= 3) return false; // ya es “larga”
+      if(header.length <= 3) return false;
       let colsNumericas = 0;
       for(let i=1;i<header.length;i++){
         const ratioNum = ratioNumericoCol(rows, i);
         if(ratioNum >= 0.6) colsNumericas++;
       }
-      const etiquetaEsTexto = ratioNumericoCol(rows, 0) <= 0.3; // col 0 principalmente texto
+      const etiquetaEsTexto = ratioNumericoCol(rows, 0) <= 0.3;
       return etiquetaEsTexto && colsNumericas >= Math.max(2, Math.floor((header.length-1)*0.5));
     }
 
@@ -517,11 +512,8 @@
         const lastComma = clean.lastIndexOf(',');
         const lastDot   = clean.lastIndexOf('.');
         let norm = clean;
-        if(lastComma>lastDot){ // coma decimal
-          norm = clean.replace(/\./g,'').replace(',','.');
-        }else{ // punto decimal
-          norm = clean.replace(/,/g,'');
-        }
+        if(lastComma>lastDot){ norm = clean.replace(/\./g,'').replace(',','.'); }
+        else{ norm = clean.replace(/,/g,''); }
         return !isNaN(parseFloat(norm));
       }
       return !isNaN(parseFloat(clean));
@@ -534,11 +526,8 @@
       const lastComma = s.lastIndexOf(',');
       const lastDot   = s.lastIndexOf('.');
       let norm = s.replace(/\s/g,'').replace(/%/g,'');
-      if(lastComma>lastDot){
-        norm = norm.replace(/\./g,'').replace(',','.');
-      }else{
-        norm = norm.replace(/,/g,'');
-      }
+      if(lastComma>lastDot){ norm = norm.replace(/\./g,'').replace(',','.'); }
+      else{ norm = norm.replace(/,/g,''); }
       const n = parseFloat(norm);
       return isNaN(n) ? 0 : n;
     }
@@ -548,7 +537,6 @@
       const series = header.slice(1);
       const nuevoHeader = [header[labelCol] || 'Etiqueta', 'Serie', 'Valor'];
       const nuevasFilas = [];
-
       rows.forEach(r=>{
         const etiqueta = r[labelCol];
         for(let i=1;i<header.length;i++){
@@ -559,23 +547,269 @@
           }
         }
       });
-
       return {nuevoHeader, nuevasFilas};
     }
 
+    // ======================================
+    //  ESPECIALES: CARD 3 / CARD 6 / 7 / 8
+    // ======================================
+
+    function getColIndex(header, name){
+      const low = name.toLowerCase();
+      return header.findIndex(h => (h||'').toString().trim().toLowerCase() === low);
+    }
+
+    // --- CARD 3: Solo filtro "Serie"; X= Años; Y= Valor ---
+    function renderCard3(datos){
+      let {header, rows} = datos;
+
+      const iSerie = getColIndex(header,'Serie');
+      const iAnio  = getColIndex(header,'Año');
+      const iValor = getColIndex(header,'Valor');
+
+      if(iSerie===-1 || iAnio===-1 || iValor===-1){
+        procesarYConstruirFiltros(datos);
+        return;
+      }
+
+      datosDetalleActual = {
+        ...datosDetalleActual,
+        header, rows,
+        analysis: { labelIndex:iAnio, metricIndices:[{label:'Valor', index:iValor}], categoryIndices:[] },
+        _mode:'card3'
+      };
+
+      const cont = document.getElementById('detalle-filtros-contenedor');
+      const opcionesSerie = Array.from(new Set(rows.map(r=>r[iSerie]).filter(Boolean))).sort();
+      cont.innerHTML = `
+        <div>
+          <label for="filtro-serie-card3" class="block text-sm font-medium text-muted mb-1">Serie</label>
+          <select id="filtro-serie-card3" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+            ${opcionesSerie.map(o=>`<option value="${o}">${o}</option>`).join('')}
+          </select>
+        </div>
+      `;
+      document.getElementById('filtro-serie-card3').addEventListener('change', actualizarGraficaCard3);
+
+      actualizarGraficaCard3();
+      construirTabla(rows, header);
+    }
+
+    function actualizarGraficaCard3(){
+      const {header, rows} = datosDetalleActual;
+      const iSerie = getColIndex(header,'Serie');
+      const iAnio  = getColIndex(header,'Año');
+      const iValor = getColIndex(header,'Valor');
+
+      const serieSel = document.getElementById('filtro-serie-card3').value;
+
+      const filtradas = rows.filter(r => (r[iSerie]===serieSel));
+      const pares = filtradas
+        .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
+        .filter(p => p.anio !== null);
+
+      pares.sort((a,b)=> a.anio - b.anio);
+
+      dibujarBarras(pares.map(p=>String(p.anio)), pares.map(p=>p.valor), 'Valor');
+    }
+
+    // --- CARD 6 / 7 / 8: sin filtros; X= Años; Y= Valor ---
+    function renderYearsNoFilters(datos){
+      let {header, rows} = datos;
+
+      const iAnio  = getColIndex(header,'Año');
+      const iValor = getColIndex(header,'Valor');
+
+      if(iAnio===-1 || iValor===-1){
+        procesarYConstruirFiltros(datos);
+        return;
+      }
+
+      datosDetalleActual = {
+        ...datosDetalleActual,
+        header, rows,
+        analysis: { labelIndex:iAnio, metricIndices:[{label:'Valor', index:iValor}], categoryIndices:[] },
+        _mode:'years-only'
+      };
+
+      const cont = document.getElementById('detalle-filtros-contenedor');
+      cont.innerHTML = `<div class="md:col-span-3 text-muted text-sm">Este indicador no tiene filtros adicionales.</div>`;
+
+      const pares = rows
+        .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
+        .filter(p => p.anio !== null);
+
+      pares.sort((a,b)=> a.anio - b.anio);
+
+      dibujarBarras(pares.map(p=>String(p.anio)), pares.map(p=>p.valor), 'Valor');
+      construirTabla(rows, header);
+    }
+
+    // ======================================
+    //  ESPECIALES: CARD 9 / 10 / 11 / 13
+    // ======================================
+
+    // Índice por varios alias
+    function getIdx(header, ...names){
+      const lowered = header.map(h => (h||'').toString().trim().toLowerCase());
+      for (const n of names){
+        const i = lowered.indexOf((n||'').toString().trim().toLowerCase());
+        if(i !== -1) return i;
+      }
+      return -1;
+    }
+
+    // 9 y 10: Filtro ENTIDAD; Años en X; Valor en Y
+    function renderEntidadAnios(datos){
+      let {header, rows} = datos;
+
+      const iAnio   = getIdx(header, 'año','anio','year');
+      const iValor  = getIdx(header, 'valor','total','monto');
+      const iEnt    = getIdx(header, 'nombre geográfico','nombre geográfica','entidad','estado','entidad federativa');
+
+      if (iAnio === -1 || iValor === -1 || iEnt === -1){
+        procesarYConstruirFiltros(datos);
+        return;
+      }
+
+      datosDetalleActual = {
+        ...datosDetalleActual,
+        header, rows,
+        analysis: {
+          labelIndex: iAnio,
+          metricIndices: [{label:'Valor', index:iValor}],
+          categoryIndices: []
+        },
+        _mode: 'entidad-anios',
+        _cols: {iAnio, iValor, iEnt}
+      };
+
+      const opcionesEnt = Array.from(new Set(rows.map(r=>r[iEnt]).filter(Boolean))).sort();
+      const cont = document.getElementById('detalle-filtros-contenedor');
+      cont.innerHTML = `
+        <div>
+          <label for="filtro-entidad-910" class="block text-sm font-medium text-muted mb-1">Entidad</label>
+          <select id="filtro-entidad-910" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+            ${opcionesEnt.map(o=>`<option value="${o}">${o}</option>`).join('')}
+          </select>
+        </div>
+      `;
+      document.getElementById('filtro-entidad-910').addEventListener('change', actualizarGraficaEntidadAnios);
+
+      actualizarGraficaEntidadAnios();
+      construirTabla(rows, header);
+    }
+
+    function actualizarGraficaEntidadAnios(){
+      const {header, rows, _cols} = datosDetalleActual;
+      const {iAnio, iValor, iEnt} = _cols;
+
+      const entSel = document.getElementById('filtro-entidad-910').value;
+      const filtradas = rows.filter(r => r[iEnt] === entSel);
+
+      const serie = filtradas
+        .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
+        .filter(p => p.anio !== null)
+        .sort((a,b)=> a.anio - b.anio);
+
+      dibujarBarras(serie.map(p=>String(p.anio)), serie.map(p=>p.valor), 'Valor');
+    }
+
+    // 11 y 13: Filtro AÑO; barras horizontales por ENTIDAD (top 20)
+    function renderTopByYear(datos){
+      let {header, rows} = datos;
+
+      const iAnio   = getIdx(header, 'año','anio','year','ciclo escolar');
+      const iValor  = getIdx(header, 'valor','%','porcentaje');
+      const iEnt    = getIdx(header, 'nombre geográfico','nombre geográfica','entidad','estado','entidad federativa');
+
+      if (iAnio === -1 || iValor === -1 || iEnt === -1){
+        procesarYConstruirFiltros(datos);
+        return;
+      }
+
+      datosDetalleActual = {
+        ...datosDetalleActual,
+        header, rows,
+        analysis: {
+          labelIndex: iEnt,
+          metricIndices: [{label:'Valor', index:iValor}],
+          categoryIndices: []
+        },
+        _mode: 'top-by-year',
+        _cols: {iAnio, iValor, iEnt}
+      };
+
+      const anios = Array.from(new Set(
+        rows.map(r => extraeAnio(r[iAnio])).filter(a => a !== null)
+      )).sort((a,b)=> a - b);
+
+      const cont = document.getElementById('detalle-filtros-contenedor');
+      cont.innerHTML = `
+        <div>
+          <label for="filtro-anio-1113" class="block text-sm font-medium text-muted mb-1">Año</label>
+          <select id="filtro-anio-1113" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+            ${anios.map(a=>`<option value="${a}">${a}</option>`).join('')}
+          </select>
+        </div>
+      `;
+      const sel = document.getElementById('filtro-anio-1113');
+      sel.value = String(anios[anios.length-1]);
+      sel.addEventListener('change', actualizarGraficaTopByYear);
+
+      actualizarGraficaTopByYear();
+
+      const yearNow = parseInt(sel.value,10);
+      const filaYear = rows.filter(r => extraeAnio(r[iAnio]) === yearNow);
+      construirTabla(filaYear, header);
+    }
+
+    function actualizarGraficaTopByYear(){
+      const {rows, _cols} = datosDetalleActual;
+      const {iAnio, iValor, iEnt} = _cols;
+      const yearSel = parseInt(document.getElementById('filtro-anio-1113').value, 10);
+
+      const filaYear = rows
+        .filter(r => extraeAnio(r[iAnio]) === yearSel)
+        .map(r => ({ ent: r[iEnt], val: toNumber(r[iValor]) }));
+
+      filaYear.sort((a,b)=> b.val - a.val);
+      const top = filaYear.slice(0, Math.min(20, filaYear.length));
+
+      const ctx = document.getElementById('grafica-indicador').getContext('2d');
+      if(graficaActual) graficaActual.destroy();
+      graficaActual = new Chart(ctx,{
+        type: 'bar',
+        data:{
+          labels: top.map(d=>d.ent),
+          datasets:[{
+            label: `Valor (${yearSel})`,
+            data: top.map(d=>d.val),
+            backgroundColor: 'rgba(113,120,91,0.7)',
+            borderColor: 'rgba(113,120,91,1)',
+            borderWidth: 1
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          indexAxis:'y',
+          scales:{
+            x:{beginAtZero:true},
+            y:{ticks:{font:{size: top.length>15 ? 10 : 12}}}
+          },
+          plugins:{legend:{display:true}}
+        }
+      });
+    }
+
     // ==========================
-    //   FILTROS + GRÁFICA + TABLA
+    //  GENÉRICO (resto de cards)
     // ==========================
     function procesarYConstruirFiltros(datos){
       let {header, rows} = datos;
-
-      // === reglas por card ===
-      const id = datosDetalleActual.id;
-      const special = SPECIAL[id] || {};
-
       const analysis = {labelIndex:-1, metricIndices:[], categoryIndices:[]};
 
-      // Elegir la columna etiqueta (prioriza algunos nombres)
       const prefer = ['Subtipo de delito','Nombre Geográfico','Nombre Geográfica','Nombre','Desagregación','Ciclo escolar','Año','Etiqueta'];
       for(const name of prefer){
         const idx = header.findIndex(h=>h.trim().toLowerCase()===name.toLowerCase());
@@ -586,7 +820,6 @@
         if(analysis.labelIndex===-1) analysis.labelIndex = 0;
       }
 
-      // Clasificar columnas
       header.forEach((h,i)=>{
         if(i===analysis.labelIndex) return;
         const isNum = ratioNumericoCol(rows, i) >= 0.6;
@@ -600,7 +833,6 @@
         }
       });
 
-      // Fallback a conteo si no hay métricas numéricas
       if(analysis.metricIndices.length===0){
         const conteos = {};
         rows.forEach(r=>{
@@ -614,23 +846,12 @@
         analysis.categoryIndices=[];
       }
 
-      // === aplicar reglas solicitadas ===
-      if(special.noFilters){
-        // Quitar todos los filtros (cards 06, 07, 08)
-        analysis.categoryIndices = [];
-      }else if(special.onlySerie){
-        // Dejar solo el filtro "Serie" (card 03)
-        analysis.categoryIndices = analysis.categoryIndices.filter(c => c.label.toLowerCase() === 'serie');
-      }
+      datosDetalleActual = {...datosDetalleActual, header, rows, analysis, _mode:'generic'};
 
-      datosDetalleActual = {...datosDetalleActual, header, rows, analysis, special};
-
-      // Controles de filtros
       const cont = document.getElementById('detalle-filtros-contenedor');
       let html='';
 
-      // Selector de Métrica: solo si hay >1 (respetando tu UX)
-      if(analysis.metricIndices.length>1 && !special.noFilters){
+      if(analysis.metricIndices.length>1){
         html += `<div>
           <label for="filtro-metrica" class="block text-sm font-medium text-muted mb-1">Métrica</label>
           <select id="filtro-metrica" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
@@ -639,51 +860,36 @@
         </div>`;
       }
 
-      // Selectores de categorías
-      if(!special.noFilters){
-        analysis.categoryIndices.forEach(cat=>{
-          html += `<div>
-            <label for="filtro-cat-${cat.index}" class="block text-sm font-medium text-muted mb-1">${cat.label}</label>
-            <select id="filtro-cat-${cat.index}" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-              <option value="todos">Todos</option>
-              ${cat.options.map(o=>`<option value="${o}">${o}</option>`).join('')}
-            </select>
-          </div>`;
-        });
-      }
+      analysis.categoryIndices.forEach(cat=>{
+        html += `<div>
+          <label for="filtro-cat-${cat.index}" class="block text-sm font-medium text-muted mb-1">${cat.label}</label>
+          <select id="filtro-cat-${cat.index}" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
+            <option value="todos">Todos</option>
+            ${cat.options.map(o=>`<option value="${o}">${o}</option>`).join('')}
+          </select>
+        </div>`;
+      });
 
-      // Render de contenedor de filtros
       if(html===''){
         cont.innerHTML = `<div class="md:col-span-3 text-muted text-sm">Este indicador no tiene filtros adicionales disponibles.</div>`;
       }else{
         cont.innerHTML = html;
         cont.querySelectorAll('select').forEach(sel=> sel.addEventListener('change', onFiltroChange));
+        actualizarOpcionesCascada();
       }
-
-      // Default de Serie para card 03
-      if(special.onlySerie && special.defaultSerie){
-        const serieSel = cont.querySelector('[id^="filtro-cat-"]');
-        if(serieSel){
-          const opt = [...serieSel.options].find(o => (o.value||'').toString().trim().toLowerCase() === special.defaultSerie.toLowerCase());
-          if(opt){ serieSel.value = opt.value; }
-        }
-      }
-
-      // Oculta el hint de reseteo
-      document.getElementById('detalle-hint').classList.add('hidden');
 
       actualizarGraficaYTabla();
     }
 
-    // --- Cascada: actualizar opciones en cada filtro según otros filtros ---
     function onFiltroChange(e){
+      actualizarOpcionesCascada(e && e.target ? e.target.id : null);
       actualizarGraficaYTabla();
     }
 
     function obtenerEstadoFiltros(){
       const {analysis} = datosDetalleActual;
       const estado = {};
-      (analysis.categoryIndices||[]).forEach(cat=>{
+      analysis.categoryIndices.forEach(cat=>{
         const el = document.getElementById(`filtro-cat-${cat.index}`);
         estado[cat.index] = el ? el.value : 'todos';
       });
@@ -695,25 +901,53 @@
       return rows.filter(r => indices.every(idx => estado[idx]==='todos' || r[idx]===estado[idx]));
     }
 
-    function actualizarGraficaYTabla(){
+    function actualizarOpcionesCascada(ultimoId){
       if(!datosDetalleActual) return;
+      const {rows, analysis} = datosDetalleActual;
+      const estado = obtenerEstadoFiltros();
+      let huboReset = false;
 
-      const {header, rows, analysis, special} = datosDetalleActual;
+      analysis.categoryIndices.forEach(cat=>{
+        const selId = `filtro-cat-${cat.index}`;
+        const el = document.getElementById(selId);
+        if(!el) return;
+
+        const estadoSinEste = {...estado};
+        delete estadoSinEste[cat.index];
+        const candidatos = filtrarConEstado(rows, estadoSinEste).map(r=>r[cat.index]);
+        const opcionesValidas = Array.from(new Set(candidatos.filter(x=>x!=='' && x!==null && typeof x!=='undefined'))).sort();
+
+        const valorActual = el.value;
+        el.innerHTML = `<option value="todos">Todos</option>` + opcionesValidas.map(o=>`<option value="${o}">${o}</option>`).join('');
+        if(valorActual && opcionesValidas.includes(valorActual)){
+          el.value = valorActual;
+        }else{
+          el.value = 'todos';
+          if(ultimoId === selId) huboReset = true;
+        }
+      });
+
+      const hint = document.getElementById('detalle-hint');
+      if(huboReset){ hint.classList.remove('hidden'); }
+      else{ hint.classList.add('hidden'); }
+    }
+
+    function actualizarGraficaYTabla(){
+      if(!datosDetalleActual || datosDetalleActual._mode!=='generic') return;
+
+      const {header, rows, analysis} = datosDetalleActual;
       const {labelIndex, categoryIndices} = analysis;
 
-      // Métrica seleccionada
       let metricaIndex = analysis.metricIndices[0].index;
       const metricaEl = document.getElementById('filtro-metrica');
       if(metricaEl) metricaIndex = parseInt(metricaEl.value);
       const metricaLabel = header[metricaIndex] || 'Valor';
 
-      // Filtros de categoría (estado actual)
       const estado = obtenerEstadoFiltros();
       let datosFiltrados = filtrarConEstado(rows, estado);
 
       if(datosFiltrados.length === 0){
-        // resetear todos a 'todos'
-        (categoryIndices||[]).forEach(cat=>{
+        categoryIndices.forEach(cat=>{
           const el = document.getElementById(`filtro-cat-${cat.index}`);
           if(el) el.value = 'todos';
         });
@@ -723,7 +957,6 @@
         document.getElementById('detalle-hint').classList.add('hidden');
       }
 
-      // Agregación por etiqueta
       const agreg = new Map();
       datosFiltrados.forEach(r=>{
         const label = r[labelIndex];
@@ -733,40 +966,23 @@
 
       let datos = Array.from(agreg, ([label,value])=>({label,value}));
 
-      // === Orden y eje (barras verticales SIEMPRE) ===
-      let eje = 'x';
+      const lbl = (header[labelIndex]||'').toLowerCase();
+      const esSerie = /\b(añ|anio|año|ciclo)\b/.test(lbl);
+      if(esSerie){ datos.sort((a,b)=> a.label.toString().localeCompare(b.label.toString())); }
+      else{ datos.sort((a,b)=> b.value - a.value); }
 
-      if(special && special.kpiRegex){
-        // Card 08: respeta etiqueta "kpi 8-YYYY" pero ordena por año interno
-        datos.forEach(d=>{
-          const m = (d.label||'').toString().match(special.kpiRegex);
-          d._year = m ? parseInt(m[1],10) : null;
-        });
-        datos.sort((a,b)=>{
-          if(a._year!==null && b._year!==null) return a._year - b._year;
-          return a.label.toString().localeCompare(b.label.toString());
-        });
-      }else{
-        // Para campos tipo "Año"
-        const lbl = (header[labelIndex]||'').toLowerCase();
-        const esSerieTemporal = /\b(añ|anio|año|ciclo)\b/.test(lbl);
-        if(esSerieTemporal){
-          datos.sort((a,b)=> a.label.toString().localeCompare(b.label.toString()));
-        }else{
-          // no temporal: orden por valor desc
-          datos.sort((a,b)=> b.value - a.value);
-        }
-      }
+      const top = (esSerie || datos.length<=20) ? datos : datos.slice(0,20);
+      const eje = esSerie ? 'x' : 'y';
 
       const ctx = document.getElementById('grafica-indicador').getContext('2d');
       if(graficaActual) graficaActual.destroy();
       graficaActual = new Chart(ctx,{
         type: 'bar',
         data:{
-          labels: datos.map(d=>d.label), // muestra etiqueta exacta (incluye "kpi 8-YYYY")
+          labels: top.map(d=>d.label),
           datasets:[{
             label: metricaLabel,
-            data: datos.map(d=>d.value),
+            data: top.map(d=>d.value),
             backgroundColor: 'rgba(113,120,91,0.7)',
             borderColor: 'rgba(113,120,91,1)',
             borderWidth: 1
@@ -775,41 +991,84 @@
         options:{
           responsive:true,
           maintainAspectRatio:false,
-          indexAxis: eje, // barras verticales
+          indexAxis: eje,
           scales:{
-            y:{beginAtZero:true},
-            x:{ticks:{autoSkip:false,maxRotation:0,minRotation:0}}
+            [eje==='x'?'y':'x']:{beginAtZero:true},
+            [eje]:{ticks:{font:{size: top.length>15 && eje==='y' ? 10 : 12}}}
           },
           plugins:{ legend:{display:true} }
         }
       });
 
-      // ===== Tabla =====
+      construirTabla(datosFiltrados, header);
+    }
+
+    function construirTabla(rows, header){
       const thead = document.getElementById('detalle-tabla-header');
       const tbody = document.getElementById('detalle-tabla-body');
 
       thead.innerHTML = `<tr>${header.map(h=>`<th class="px-4 py-3 text-left text-xs font-medium text-card uppercase tracking-wider">${h}</th>`).join('')}</tr>`;
-
-      tbody.innerHTML = datosFiltrados.map(fila=>`
+      tbody.innerHTML = rows.map(fila=>`
         <tr class="hover:bg-cta/10">
-          ${fila.slice(0, header.length).map((celda,i)=>{
-            const v = (celda===null || typeof celda==='undefined' || celda==='') ? 'N/A' : celda;
-            return `<td class="px-4 py-3 whitespace-nowrap text-sm text-ink">${v}</td>`;
-          }).join('')}
-        </tr>
-      `).join('');
+          ${fila.slice(0, header.length).map((celda)=>`<td class="px-4 py-3 whitespace-nowrap text-sm text-ink">${(celda??'')===''?'N/A':celda}</td>`).join('')}
+        </tr>`).join('');
     }
 
-    // Exportar el CSV actualmente cargado (tras filtros aplicados)
+    // Herramientas comunes
+    function extraeAnio(txt){
+      if(txt==null) return null;
+      const s = String(txt);
+      const m = s.match(/(19|20)\d{2}/);
+      return m ? parseInt(m[0],10) : null;
+    }
+
+    function dibujarBarras(labels, values, etiqueta){
+      const ctx = document.getElementById('grafica-indicador').getContext('2d');
+      if(graficaActual) graficaActual.destroy();
+      graficaActual = new Chart(ctx,{
+        type:'bar',
+        data:{
+          labels,
+          datasets:[{
+            label: etiqueta,
+            data: values,
+            backgroundColor: 'rgba(113,120,91,0.7)',
+            borderColor: 'rgba(113,120,91,1)',
+            borderWidth: 1
+          }]
+        },
+        options:{
+          responsive:true,
+          maintainAspectRatio:false,
+          indexAxis:'x',
+          scales:{
+            y:{beginAtZero:true},
+            x:{ticks:{autoSkip:false,maxRotation:0,minRotation:0}}
+          },
+          plugins:{legend:{display:true}}
+        }
+      });
+    }
+
+    // Exportar CSV (modo actual)
     function exportarCSVActual(){
       if(!datosDetalleActual) return;
-      const {header, rows} = datosDetalleActual;
+      const {header} = datosDetalleActual;
 
-      const estado = obtenerEstadoFiltros();
-      let datosFiltrados = filtrarConEstado(rows, estado);
+      let filas = [];
+      if(datosDetalleActual._mode==='generic'){
+        const estado = obtenerEstadoFiltros();
+        filas = filtrarConEstado(datosDetalleActual.rows, estado);
+      }else if(datosDetalleActual._mode==='top-by-year'){
+        const {rows, _cols} = datosDetalleActual;
+        const {iAnio} = _cols;
+        const yearSel = parseInt(document.getElementById('filtro-anio-1113').value, 10);
+        filas = rows.filter(r => extraeAnio(r[iAnio]) === yearSel);
+      }else{
+        filas = datosDetalleActual.rows;
+      }
 
-      const contenido = [header].concat(datosFiltrados).map(r=> r.map(c => (c==null?'':c))).map(r => r.join(',')).join('\n');
-
+      const contenido = [header].concat(filas).map(r=> r.map(c => (c==null?'':c))).map(r => r.join(',')).join('\n');
       const blob = new Blob([contenido], {type: 'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');

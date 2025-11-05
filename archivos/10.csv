@@ -1,6 +1,13 @@
-Clave_Geográfica,Nombre_Geográfico,,Desagregación,,Clave_Geográfica,,Nombre_Geográfico,Desagregación
-17,Morelos,,Grupos de edad,,17,,Morelos,Sexo
-Año,0 a 4 años,5 a 9 años,10 a 14 años,15 a 19 años,Año,,kpi 10 (Hombres),kpi 10 (Mujeres)
-2015,81,265,556,583,2015,,858,627
-2020,93,189,389,564,2020,,706,529
-,,,,Elaborado por la Dirección de Administración del Sistema de Información Nacional de la SE-SIPINNA con base en datos del INEGI.,,,,
+Clave Geográfica,Nombre Geográfico,Desagregación,Serie,Año,Valor
+17,Morelos,Grupos de edad,0 a 4 años,2015,81
+17,Morelos,Grupos de edad,5 a 9 años,2015,265
+17,Morelos,Grupos de edad,10 a 14 años,2015,556
+17,Morelos,Grupos de edad,15 a 19 años,2015,583
+17,Morelos,Grupos de edad,0 a 4 años,2020,93
+17,Morelos,Grupos de edad,5 a 9 años,2020,189
+17,Morelos,Grupos de edad,10 a 14 años,2020,389
+17,Morelos,Grupos de edad,15 a 19 años,2020,564
+17,Morelos,Sexo,kpi 10 (Hombres),2015,858
+17,Morelos,Sexo,kpi 10 (Mujeres),2015,627
+17,Morelos,Sexo,kpi 10 (Hombres),2020,706
+17,Morelos,Sexo,kpi 10 (Mujeres),2020,529

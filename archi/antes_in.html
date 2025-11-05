@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SIPINNA Morelos – Tableros</title>
 
-  <!-- Tailwind + Chart.js + PapaParse + Ionicons -->
+  <!-- Tailwind + Chart.js + Ionicons + PapaParse -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -124,6 +124,7 @@
           </div>
 
           <div id="detalle-contenido" class="hidden">
+            <!-- Se removió el bloque "Explorar Datos" con KPIs -->
             <div class="p-6 lg:p-8 bg-background border-b border-ring">
               <div id="detalle-filtros-contenedor" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
               <p id="detalle-hint" class="hint mt-3 hidden">No hay datos para la combinación de filtros actual. Se restableció un filtro a “Todos”.</p>
@@ -257,7 +258,7 @@
           </div>`;
       });
 
-      // llenar selects (lista)
+      // llenar selects
       const filtroDerecho = document.getElementById('filtro-derecho');
       [...setDerechos].sort().forEach(d=>filtroDerecho.innerHTML += `<option value="${d}">${d}</option>`);
       const filtroDominio = document.getElementById('filtro-dominio');
@@ -342,10 +343,10 @@
             `Verifica el nombre y que sirves la carpeta (p.ej. <code>python -m http.server</code>).`
           );
         }
-        const csvTexto = (await response.text()).replace(/^\uFEFF/, '');
+        const csvTexto = (await response.text()).replace(/^\uFEFF/, ''); // quita BOM
 
         let parsed = Papa.parse(csvTexto, {
-          delimiter: '',
+          delimiter: '', // autodetect
           skipEmptyLines: 'greedy',
           dynamicTyping: false,
           header: false,
@@ -366,32 +367,12 @@
           .map(r => r.map(c => (typeof c === 'string' ? c.trim() : c)))
           .filter(r => r.some(c => c !== '' && c !== null && typeof c !== 'undefined'));
 
-        const datos = construirEstructuraDesdeCrudo(crudo);
+        const datos = construirEstructuraDesdeCrudo(crudo, id);
         if(!datos || !datos.rows?.length){
           throw new Error("El CSV está vacío o no se pudo interpretar su estructura.");
         }
 
-        const idSel = datosDetalleActual.id;
-
-        // ==== Especiales que ya estaban ====
-        if(idSel === '03'){
-          renderCard3(datos);                          // Filtro Serie; años X; barras Valor
-        }else if(idSel === '06' || idSel === '07' || idSel === '08'){
-          renderYearsNoFilters(datos);                 // Sin filtros; años X; barras Valor
-        }
-        // ==== Nuevos ajustes que pediste ====
-        else if(idSel === '09'){
-          renderSexoYears(datos);                      // Filtro Sexo (H/M/T); años X; barras
-        }else if(idSel === '10'){
-          renderSerieFromColumns(datos);               // Filtro Serie desde columnas numéricas
-        }else if(idSel === '13'){
-          renderYearsNoFilters(datos);                 // Como 06/07/08 (años en X, sin filtros)
-        }
-        // ==== Resto (genérico) ====
-        else{
-          procesarYConstruirFiltros(datos);
-        }
-
+        procesarYConstruirFiltros(datos);
         document.getElementById('detalle-loader').classList.add('hidden');
         document.getElementById('detalle-contenido').classList.remove('hidden');
 
@@ -421,42 +402,52 @@
     // ==========================
     //  HEADER + LIMPIEZA + DESPIVOTADO
     // ==========================
-    function construirEstructuraDesdeCrudo(filas){
+    function construirEstructuraDesdeCrudo(filas, id){
       if(!filas.length) return null;
 
+      // 1) Encontrar fila de encabezado "ancha" y consistente
       let headerIdx = 0;
       for(let i=0;i<Math.min(20, filas.length);i++){
         const row = filas[i];
-        const filled = row.filter(x=>x!=='');
-        if(row.length>=3 && (filled.length/row.length) >= 0.6){ headerIdx = i; break; }
+        const filled = row.filter(x=>x!=='' && x!==null && typeof x!=='undefined');
+        if(row.length>=3 && filled.length/row.length >= 0.6){
+          headerIdx = i; break;
+        }
       }
 
       let header = filas[headerIdx].map(normalizarHeader);
       let rows = filas.slice(headerIdx+1);
 
+      // 2) Normalizar longitud
       rows = rows.map(r=>{
         if(r.length<header.length) return [...r, ...Array(header.length - r.length).fill('')];
         if(r.length>header.length)  return r.slice(0, header.length);
         return r;
       });
 
+      // 3) Eliminar columnas Unnamed/ vacías del header
       const keepIdx = header.map((h,i)=>({h, i})).filter(obj=> obj.h && !/^Unnamed/i.test(obj.h));
       header = keepIdx.map(x=>x.h);
       rows = rows.map(r=> keepIdx.map(x=> r[x.i] ));
 
+      // 4) Unificar alias comunes
       header = header.map(unificarAlias);
 
+      // 5) Detectar tabla ancha y despivotar si aplica
       const esAncho = detectarTablaAncha(header, rows);
       if(esAncho){
         const {nuevoHeader, nuevasFilas} = despivotar(header, rows);
         header = nuevoHeader.map(unificarAlias);
         rows  = nuevasFilas;
       }else{
+        // Rellenar etiqueta en col 0 si hay subtítulos agrupados
         let last = '';
         rows.forEach(r=>{ if(!r[0] || r[0]===''){ r[0] = last; } else { last = r[0]; } });
       }
 
+      // 6) Quitar filas totalmente vacías tras limpieza
       rows = rows.filter(r => r.some(v => (v!=='' && v!==null && typeof v!=='undefined')));
+
       return { header, rows };
     }
 
@@ -489,13 +480,13 @@
     }
 
     function detectarTablaAncha(header, rows){
-      if(header.length <= 3) return false;
+      if(header.length <= 3) return false; // ya es “larga”
       let colsNumericas = 0;
       for(let i=1;i<header.length;i++){
         const ratioNum = ratioNumericoCol(rows, i);
         if(ratioNum >= 0.6) colsNumericas++;
       }
-      const etiquetaEsTexto = ratioNumericoCol(rows, 0) <= 0.3;
+      const etiquetaEsTexto = ratioNumericoCol(rows, 0) <= 0.3; // col 0 principalmente texto
       return etiquetaEsTexto && colsNumericas >= Math.max(2, Math.floor((header.length-1)*0.5));
     }
 
@@ -518,8 +509,11 @@
         const lastComma = clean.lastIndexOf(',');
         const lastDot   = clean.lastIndexOf('.');
         let norm = clean;
-        if(lastComma>lastDot){ norm = clean.replace(/\./g,'').replace(',','.'); }
-        else{ norm = clean.replace(/,/g,''); }
+        if(lastComma>lastDot){ // coma decimal
+          norm = clean.replace(/\./g,'').replace(',','.');
+        }else{ // punto decimal
+          norm = clean.replace(/,/g,'');
+        }
         return !isNaN(parseFloat(norm));
       }
       return !isNaN(parseFloat(clean));
@@ -532,8 +526,11 @@
       const lastComma = s.lastIndexOf(',');
       const lastDot   = s.lastIndexOf('.');
       let norm = s.replace(/\s/g,'').replace(/%/g,'');
-      if(lastComma>lastDot){ norm = norm.replace(/\./g,'').replace(',','.'); }
-      else{ norm = norm.replace(/,/g,''); }
+      if(lastComma>lastDot){
+        norm = norm.replace(/\./g,'').replace(',','.');
+      }else{
+        norm = norm.replace(/,/g,'');
+      }
       const n = parseFloat(norm);
       return isNaN(n) ? 0 : n;
     }
@@ -543,6 +540,7 @@
       const series = header.slice(1);
       const nuevoHeader = [header[labelCol] || 'Etiqueta', 'Serie', 'Valor'];
       const nuevasFilas = [];
+
       rows.forEach(r=>{
         const etiqueta = r[labelCol];
         for(let i=1;i<header.length;i++){
@@ -553,335 +551,18 @@
           }
         }
       });
+
       return {nuevoHeader, nuevasFilas};
     }
 
-    // ======================================
-    //  ESPECIALES: CARD 3 / CARD 6 / 7 / 8 (YA EXISTENTES)
-    // ======================================
-
-    function getColIndex(header, name){
-      const low = name.toLowerCase();
-      return header.findIndex(h => (h||'').toString().trim().toLowerCase() === low);
-    }
-
-    // CARD 3: Serie -> Años en X
-    function renderCard3(datos){
-      let {header, rows} = datos;
-
-      const iSerie = getColIndex(header,'Serie');
-      const iAnio  = getColIndex(header,'Año');
-      const iValor = getColIndex(header,'Valor');
-
-      if(iSerie===-1 || iAnio===-1 || iValor===-1){
-        procesarYConstruirFiltros(datos);
-        return;
-      }
-
-      datosDetalleActual = {
-        ...datosDetalleActual,
-        header, rows,
-        analysis: { labelIndex:iAnio, metricIndices:[{label:'Valor', index:iValor}], categoryIndices:[] },
-        _mode:'card3'
-      };
-
-      const cont = document.getElementById('detalle-filtros-contenedor');
-      const opcionesSerie = Array.from(new Set(rows.map(r=>r[iSerie]).filter(Boolean))).sort();
-      cont.innerHTML = `
-        <div>
-          <label for="filtro-serie-card3" class="block text-sm font-medium text-muted mb-1">Serie</label>
-          <select id="filtro-serie-card3" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-            ${opcionesSerie.map(o=>`<option value="${o}">${o}</option>`).join('')}
-          </select>
-        </div>
-      `;
-      document.getElementById('filtro-serie-card3').addEventListener('change', actualizarGraficaCard3);
-
-      actualizarGraficaCard3();
-      construirTabla(rows, header);
-    }
-
-    function actualizarGraficaCard3(){
-      const {header, rows} = datosDetalleActual;
-      const iSerie = getColIndex(header,'Serie');
-      const iAnio  = getColIndex(header,'Año');
-      const iValor = getColIndex(header,'Valor');
-
-      const serieSel = document.getElementById('filtro-serie-card3').value;
-
-      const pares = rows
-        .filter(r => (r[iSerie]===serieSel))
-        .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
-        .filter(p => p.anio !== null)
-        .sort((a,b)=> a.anio - b.anio);
-
-      const indicador = DB_INDEX.find(x=>x.id===datosDetalleActual.id);
-      dibujarBarras(
-        pares.map(p=>String(p.anio)),
-        pares.map(p=>p.valor),
-        `Valor – ${serieSel}`,
-        `${indicador?.nombre || ''} (${indicador?.unidad || 'Valor'}) – ${serieSel}`
-      );
-    }
-
-    // CARD 6/7/8/13: sin filtros; años en X
-    function renderYearsNoFilters(datos){
-      let {header, rows} = datos;
-      const iAnio  = getColIndex(header,'Año');
-      const iValor = getColIndex(header,'Valor');
-
-      if(iAnio===-1 || iValor===-1){
-        procesarYConstruirFiltros(datos);
-        return;
-      }
-
-      datosDetalleActual = {
-        ...datosDetalleActual,
-        header, rows,
-        analysis: { labelIndex:iAnio, metricIndices:[{label:'Valor', index:iValor}], categoryIndices:[] },
-        _mode:'years-only'
-      };
-
-      const cont = document.getElementById('detalle-filtros-contenedor');
-      cont.innerHTML = `<div class="md:col-span-3 text-muted text-sm">Este indicador no tiene filtros adicionales.</div>`;
-
-      const pares = rows
-        .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
-        .filter(p => p.anio !== null)
-        .sort((a,b)=> a.anio - b.anio);
-
-      const indicador = DB_INDEX.find(x=>x.id===datosDetalleActual.id);
-      dibujarBarras(
-        pares.map(p=>String(p.anio)),
-        pares.map(p=>p.valor),
-        `Valor`,
-        `${indicador?.nombre || ''} (${indicador?.unidad || 'Valor'})`
-      );
-      construirTabla(rows, header);
-    }
-
     // ==========================
-    //    NUEVOS ESPECIALES
-    // ==========================
-
-    // CARD 9: Filtro Sexo (Hombres/Mujeres/Total); años en X
-    function renderSexoYears(datos){
-      let {header, rows} = datos;
-
-      // Esperamos columnas: Año, Hombres, Mujeres, Total (en tabla ancha)
-      // Si vino despivotado como (Etiqueta, Serie, Valor), adaptamos.
-      const iAnio = getColIndex(header,'Año');
-      const iH = getColIndex(header,'Hombres');
-      const iM = getColIndex(header,'Mujeres');
-      const iT = getColIndex(header,'Total');
-      const iSerie = getColIndex(header,'Serie');
-      const iValor = getColIndex(header,'Valor');
-
-      datosDetalleActual = {...datosDetalleActual, header, rows, _mode:'card9-sexo'};
-
-      const cont = document.getElementById('detalle-filtros-contenedor');
-      const opciones = ['Hombres','Mujeres','Total'];
-      cont.innerHTML = `
-        <div>
-          <label for="filtro-sexo-9" class="block text-sm font-medium text-muted mb-1">Sexo</label>
-          <select id="filtro-sexo-9" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-            ${opciones.map(o=>`<option value="${o}">${o}</option>`).join('')}
-          </select>
-        </div>
-      `;
-      document.getElementById('filtro-sexo-9').addEventListener('change', actualizarGraficaCard9);
-
-      function actualizarGraficaCard9(){
-        const sexo = document.getElementById('filtro-sexo-9').value;
-        let pares = [];
-
-        if(iAnio!==-1 && iH!==-1 && iM!==-1 && iT!==-1){
-          // Tabla ancha
-          const idx = sexo==='Hombres' ? iH : (sexo==='Mujeres' ? iM : iT);
-          pares = rows
-            .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[idx]) }))
-            .filter(p => p.anio !== null)
-            .sort((a,b)=> a.anio - b.anio);
-        }else if(iSerie!==-1 && iValor!==-1 && iAnio!==-1){
-          // Despivotado (Serie = H/M/T)
-          pares = rows
-            .filter(r => String(r[iSerie]).toLowerCase() === sexo.toLowerCase())
-            .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
-            .filter(p => p.anio !== null)
-            .sort((a,b)=> a.anio - b.anio);
-        }else{
-          // Fallback genérico
-          procesarYConstruirFiltros(datos);
-          return;
-        }
-
-        const indicador = DB_INDEX.find(x=>x.id===datosDetalleActual.id);
-        dibujarBarras(
-          pares.map(p=>String(p.anio)),
-          pares.map(p=>p.valor),
-          `Valor – ${sexo}`,
-          `${indicador?.nombre || ''} (${indicador?.unidad || 'Valor'}) – ${sexo}`
-        );
-      }
-
-      actualizarGraficaCard9();
-      construirTabla(rows, header);
-    }
-
-    // CARD 10: Filtro Serie desde columnas numéricas; años en X
-    function renderSerieFromColumns(datos){
-      let {header, rows} = datos;
-      datosDetalleActual = {...datosDetalleActual, header, rows, _mode:'card10-serie-columns'};
-
-      // Detectar "Año" + columnas numéricas candidatas (excluir obvias no serie)
-      const iAnio = getColIndex(header,'Año');
-      const candidatas = header
-        .map((h,idx)=>({h, idx}))
-        .filter(o=>{
-          if(o.idx===iAnio) return false;
-          const low = (o.h||'').toString().toLowerCase();
-          if(['nombre geográfico','nombre geográfica','entidad','estado','clave geográfica','desagregación','serie'].includes(low)) return false;
-          return ratioNumericoCol(rows, o.idx) >= 0.6;
-        });
-
-      // Si la tabla ya llegó despivotada (Etiqueta, Serie, Valor)
-      const iSerie = getColIndex(header,'Serie');
-      const iValor = getColIndex(header,'Valor');
-
-      const cont = document.getElementById('detalle-filtros-contenedor');
-
-      if(iSerie!==-1 && iValor!==-1 && iAnio!==-1){
-        // Despivotado: usamos Serie única de la columna 'Serie'
-        const opciones = Array.from(new Set(rows.map(r=>r[iSerie]).filter(Boolean))).sort();
-        cont.innerHTML = `
-          <div>
-            <label for="filtro-serie-10" class="block text-sm font-medium text-muted mb-1">Serie</label>
-            <select id="filtro-serie-10" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-              ${opciones.map(o=>`<option value="${o}">${o}</option>`).join('')}
-            </select>
-          </div>
-        `;
-        document.getElementById('filtro-serie-10').addEventListener('change', actualizarGrafica10Pivot);
-
-        function actualizarGrafica10Pivot(){
-          const serieSel = document.getElementById('filtro-serie-10').value;
-          const pares = rows
-            .filter(r => r[iSerie]===serieSel)
-            .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[iValor]) }))
-            .filter(p => p.anio !== null)
-            .sort((a,b)=> a.anio - b.anio);
-
-          const indicador = DB_INDEX.find(x=>x.id===datosDetalleActual.id);
-          dibujarBarras(
-            pares.map(p=>String(p.anio)),
-            pares.map(p=>p.valor),
-            `Valor – ${serieSel}`,
-            `${indicador?.nombre || ''} (${indicador?.unidad || 'Valor'}) – ${serieSel}`
-          );
-        }
-
-        actualizarGrafica10Pivot();
-        construirTabla(rows, header);
-        return;
-      }
-
-      // Tabla ancha: elegimos entre las columnas numéricas
-      if(iAnio!==-1 && candidatas.length){
-        cont.innerHTML = `
-          <div>
-            <label for="filtro-serie-10" class="block text-sm font-medium text-muted mb-1">Serie</label>
-            <select id="filtro-serie-10" class="w-full rounded-md border-ring shadow-sm focus:border-pri focus:ring-pri">
-              ${candidatas.map(o=>`<option value="${o.idx}">${o.h}</option>`).join('')}
-            </select>
-          </div>
-        `;
-        document.getElementById('filtro-serie-10').addEventListener('change', actualizarGrafica10Wide);
-
-        function actualizarGrafica10Wide(){
-          const idx = parseInt(document.getElementById('filtro-serie-10').value,10);
-          const labelSerie = header[idx];
-          const pares = rows
-            .map(r => ({ anio: extraeAnio(r[iAnio]), valor: toNumber(r[idx]) }))
-            .filter(p => p.anio !== null)
-            .sort((a,b)=> a.anio - b.anio);
-
-          const indicador = DB_INDEX.find(x=>x.id===datosDetalleActual.id);
-          dibujarBarras(
-            pares.map(p=>String(p.anio)),
-            pares.map(p=>p.valor),
-            `Valor – ${labelSerie}`,
-            `${indicador?.nombre || ''} (${indicador?.unidad || 'Valor'}) – ${labelSerie}`
-          );
-        }
-
-        actualizarGrafica10Wide();
-        construirTabla(rows, header);
-        return;
-      }
-
-      // Fallback genérico si no se logró
-      procesarYConstruirFiltros(datos);
-    }
-
-    // ========= Utilidades de gráfica =========
-
-    function extraeAnio(txt){
-      if(txt==null) return null;
-      const s = String(txt);
-      const m = s.match(/(19|20)\d{2}/);
-      return m ? parseInt(m[0],10) : null;
-    }
-
-    // Dibuja barras verticales con título y dataset label claros
-    function dibujarBarras(labels, values, datasetLabel = 'Valor', chartTitle = ''){
-      const ctx = document.getElementById('grafica-indicador').getContext('2d');
-      if(graficaActual) graficaActual.destroy();
-      graficaActual = new Chart(ctx,{
-        type:'bar',
-        data:{
-          labels,
-          datasets:[{
-            label: datasetLabel,
-            data: values,
-            backgroundColor: 'rgba(113,120,91,0.7)',
-            borderColor: 'rgba(113,120,91,1)',
-            borderWidth: 1
-          }]
-        },
-        options:{
-          responsive:true,
-          maintainAspectRatio:false,
-          indexAxis:'x',
-          scales:{
-            y:{beginAtZero:true},
-            x:{ticks:{autoSkip:false,maxRotation:0,minRotation:0}}
-          },
-          plugins:{
-            legend:{display:true},
-            title:{
-              display: !!chartTitle,
-              text: chartTitle
-            },
-            tooltip:{
-              callbacks:{
-                label: (ctx)=>{
-                  const v = ctx.parsed.y;
-                  return `${ctx.dataset.label}: ${v}`;
-                }
-              }
-            }
-          }
-        }
-      });
-    }
-
-    // ==========================
-    //  GENÉRICO (resto de cards)
+    //   FILTROS + GRÁFICA + TABLA
     // ==========================
     function procesarYConstruirFiltros(datos){
       let {header, rows} = datos;
       const analysis = {labelIndex:-1, metricIndices:[], categoryIndices:[]};
 
+      // Elegir la columna etiqueta priorizando algunos nombres
       const prefer = ['Subtipo de delito','Nombre Geográfico','Nombre Geográfica','Nombre','Desagregación','Ciclo escolar','Año','Etiqueta'];
       for(const name of prefer){
         const idx = header.findIndex(h=>h.trim().toLowerCase()===name.toLowerCase());
@@ -892,6 +573,7 @@
         if(analysis.labelIndex===-1) analysis.labelIndex = 0;
       }
 
+      // Clasificación de columnas
       header.forEach((h,i)=>{
         if(i===analysis.labelIndex) return;
         const isNum = ratioNumericoCol(rows, i) >= 0.6;
@@ -905,6 +587,7 @@
         }
       });
 
+      // Fallback a conteo si no hay métricas
       if(analysis.metricIndices.length===0){
         const conteos = {};
         rows.forEach(r=>{
@@ -918,11 +601,13 @@
         analysis.categoryIndices=[];
       }
 
-      datosDetalleActual = {...datosDetalleActual, header, rows, analysis, _mode:'generic'};
+      datosDetalleActual = {...datosDetalleActual, header, rows, analysis};
 
+      // Controles de filtros
       const cont = document.getElementById('detalle-filtros-contenedor');
       let html='';
 
+      // Selector de Métrica (si hay varias)
       if(analysis.metricIndices.length>1){
         html += `<div>
           <label for="filtro-metrica" class="block text-sm font-medium text-muted mb-1">Métrica</label>
@@ -932,6 +617,7 @@
         </div>`;
       }
 
+      // Selectores de categorías (si existen)
       analysis.categoryIndices.forEach(cat=>{
         html += `<div>
           <label for="filtro-cat-${cat.index}" class="block text-sm font-medium text-muted mb-1">${cat.label}</label>
@@ -947,12 +633,14 @@
       }else{
         cont.innerHTML = html;
         cont.querySelectorAll('select').forEach(sel=> sel.addEventListener('change', onFiltroChange));
+        // Inicial: aplicar cascada para sincronizar opciones
         actualizarOpcionesCascada();
       }
 
-      actualizarGraficaYTabla(); // genérico
+      actualizarGraficaYTabla();
     }
 
+    // --- Cascada: actualizar opciones en cada filtro según otros filtros ---
     function onFiltroChange(e){
       actualizarOpcionesCascada(e && e.target ? e.target.id : null);
       actualizarGraficaYTabla();
@@ -977,6 +665,7 @@
       if(!datosDetalleActual) return;
       const {rows, analysis} = datosDetalleActual;
       const estado = obtenerEstadoFiltros();
+
       let huboReset = false;
 
       analysis.categoryIndices.forEach(cat=>{
@@ -984,13 +673,17 @@
         const el = document.getElementById(selId);
         if(!el) return;
 
+        // Construir estado temporal sin este filtro para calcular opciones válidas
         const estadoSinEste = {...estado};
         delete estadoSinEste[cat.index];
         const candidatos = filtrarConEstado(rows, estadoSinEste).map(r=>r[cat.index]);
         const opcionesValidas = Array.from(new Set(candidatos.filter(x=>x!=='' && x!==null && typeof x!=='undefined'))).sort();
 
+        // Reconstruir opciones del select
         const valorActual = el.value;
         el.innerHTML = `<option value="todos">Todos</option>` + opcionesValidas.map(o=>`<option value="${o}">${o}</option>`).join('');
+
+        // Mantener selección si sigue siendo válida; de lo contrario, resetear a 'todos'
         if(valorActual && opcionesValidas.includes(valorActual)){
           el.value = valorActual;
         }else{
@@ -1000,25 +693,31 @@
       });
 
       const hint = document.getElementById('detalle-hint');
-      if(huboReset){ hint.classList.remove('hidden'); }
-      else{ hint.classList.add('hidden'); }
+      if(huboReset){
+        hint.classList.remove('hidden');
+      }else{
+        hint.classList.add('hidden');
+      }
     }
 
     function actualizarGraficaYTabla(){
-      if(!datosDetalleActual || datosDetalleActual._mode!=='generic') return;
+      if(!datosDetalleActual) return;
 
       const {header, rows, analysis} = datosDetalleActual;
       const {labelIndex, categoryIndices} = analysis;
 
+      // Métrica seleccionada
       let metricaIndex = analysis.metricIndices[0].index;
       const metricaEl = document.getElementById('filtro-metrica');
       if(metricaEl) metricaIndex = parseInt(metricaEl.value);
       const metricaLabel = header[metricaIndex] || 'Valor';
 
+      // Filtros de categoría (estado actual)
       const estado = obtenerEstadoFiltros();
       let datosFiltrados = filtrarConEstado(rows, estado);
 
       if(datosFiltrados.length === 0){
+        // resetear todos a 'todos'
         categoryIndices.forEach(cat=>{
           const el = document.getElementById(`filtro-cat-${cat.index}`);
           if(el) el.value = 'todos';
@@ -1029,6 +728,7 @@
         document.getElementById('detalle-hint').classList.add('hidden');
       }
 
+      // Agregación por etiqueta
       const agreg = new Map();
       datosFiltrados.forEach(r=>{
         const label = r[labelIndex];
@@ -1038,6 +738,7 @@
 
       let datos = Array.from(agreg, ([label,value])=>({label,value}));
 
+      // Orden
       const lbl = (header[labelIndex]||'').toLowerCase();
       const esSerie = /\b(añ|anio|año|ciclo)\b/.test(lbl);
       if(esSerie){ datos.sort((a,b)=> a.label.toString().localeCompare(b.label.toString())); }
@@ -1046,9 +747,7 @@
       const top = (esSerie || datos.length<=20) ? datos : datos.slice(0,20);
       const eje = esSerie ? 'x' : 'y';
 
-      const indicador = DB_INDEX.find(x=>x.id===datosDetalleActual.id);
-      const chartTitle = `${indicador?.nombre || ''} (${indicador?.unidad || metricaLabel})`;
-
+      // Gráfica (barras siempre)
       const ctx = document.getElementById('grafica-indicador').getContext('2d');
       if(graficaActual) graficaActual.destroy();
       graficaActual = new Chart(ctx,{
@@ -1071,46 +770,36 @@
             [eje==='x'?'y':'x']:{beginAtZero:true},
             [eje]:{ticks:{font:{size: top.length>15 && eje==='y' ? 10 : 12}}}
           },
-          plugins:{
-            legend:{display:true},
-            title:{display:true, text: chartTitle},
-            tooltip:{
-              callbacks:{
-                label:(ctx)=> `${ctx.dataset.label}: ${ctx.parsed[eje==='x'?'y':'x']}`
-              }
-            }
-          }
+          plugins:{ legend:{display:true} }
         }
       });
 
-      construirTabla(datosFiltrados, header);
-    }
-
-    function construirTabla(rows, header){
+      // Tabla
       const thead = document.getElementById('detalle-tabla-header');
       const tbody = document.getElementById('detalle-tabla-body');
 
       thead.innerHTML = `<tr>${header.map(h=>`<th class="px-4 py-3 text-left text-xs font-medium text-card uppercase tracking-wider">${h}</th>`).join('')}</tr>`;
-      tbody.innerHTML = rows.map(fila=>`
+
+      tbody.innerHTML = datosFiltrados.map(fila=>`
         <tr class="hover:bg-cta/10">
-          ${fila.slice(0, header.length).map((celda)=>`<td class="px-4 py-3 whitespace-nowrap text-sm text-ink">${(celda??'')===''?'N/A':celda}</td>`).join('')}
-        </tr>`).join('');
+          ${fila.slice(0, header.length).map((celda,i)=>{
+            const v = (celda===null || typeof celda==='undefined' || celda==='') ? 'N/A' : celda;
+            return `<td class="px-4 py-3 whitespace-nowrap text-sm text-ink">${v}</td>`;
+          }).join('')}
+        </tr>
+      `).join('');
     }
 
-    // Exportar CSV
+    // Exportar el CSV actualmente cargado (tras filtros aplicados)
     function exportarCSVActual(){
       if(!datosDetalleActual) return;
-      const {header} = datosDetalleActual;
+      const {header, rows} = datosDetalleActual;
 
-      let filas = [];
-      if(datosDetalleActual._mode==='generic'){
-        const estado = obtenerEstadoFiltros();
-        filas = filtrarConEstado(datosDetalleActual.rows, estado);
-      }else{
-        filas = datosDetalleActual.rows;
-      }
+      const estado = obtenerEstadoFiltros();
+      let datosFiltrados = filtrarConEstado(rows, estado);
 
-      const contenido = [header].concat(filas).map(r=> r.map(c => (c==null?'':c))).map(r => r.join(',')).join('\n');
+      const contenido = [header].concat(datosFiltrados).map(r=> r.map(c => (c==null?'':c))).map(r => r.join(',')).join('\n');
+
       const blob = new Blob([contenido], {type: 'text/csv;charset=utf-8;'});
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
